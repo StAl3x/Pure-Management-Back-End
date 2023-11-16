@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
@@ -11,6 +11,10 @@
       <PackageReference Include="FluentValidation" Version="11.2.2" />
       <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.2.2" />
       <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="7.0.0-rc.1.22427.2" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.25">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0-preview.7.22375.6" />
       <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.23.1" />
     </ItemGroup>

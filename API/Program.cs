@@ -24,7 +24,7 @@ var mapper = new MapperConfiguration(configuration =>
 }).CreateMapper();
 builder.Services.AddSingleton(mapper);
 
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(
+builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(
     "Data source=db.db"
     ));
 
