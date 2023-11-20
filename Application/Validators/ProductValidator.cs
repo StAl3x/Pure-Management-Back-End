@@ -8,17 +8,19 @@ public class PostProductValidator : AbstractValidator<PostProductDTO>
 {
     public PostProductValidator()
     {
-        RuleFor(p => p.Price).GreaterThan(0);
+        RuleFor(p => p.PricePerUnit).GreaterThan(0);
         RuleFor(p => p.Name).NotEmpty();
+        RuleFor(p => p.Unit).NotEmpty();
     }
 }
 
-public class ProductValidator : AbstractValidator<Product>
-{
-    public ProductValidator()
+public class PutProductValidator : AbstractValidator<PutProductDTO>
+{ 
+   public PutProductValidator()
     {
+        
         RuleFor(p => p.PricePerUnit).GreaterThan(0);
         RuleFor(p => p.Name).NotEmpty();
-        RuleFor(p => p.Id).GreaterThan(0);
+        RuleFor(p => p.Unit).NotEmpty();
     }
 }

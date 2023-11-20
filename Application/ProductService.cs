@@ -12,19 +12,19 @@ public class ProductService : IProductService
 {
     private readonly IProductRepository _productRepository;
     private readonly IValidator<PostProductDTO> _postValidator;
-    private readonly IValidator<Product> _productValidator;
+    private readonly IValidator<PutProductDTO> _putProductValidator;
     private readonly IMapper _mapper;
 
 
     public ProductService(
         IProductRepository repository,
         IValidator<PostProductDTO> postValidator,
-        IValidator<Product> productValidator,
+        IValidator<PutProductDTO> putProductValidator,
         IMapper mapper)
     {
         _mapper = mapper;
         _postValidator = postValidator;
-        _productValidator = productValidator;
+        _putProductValidator = putProductValidator;
         _productRepository = repository;
     }
 
@@ -52,13 +52,14 @@ public class ProductService : IProductService
         _productRepository.RebuildDB();
     }
 
-    public Product UpdateProduct(int id, Product product)
+    public Product UpdateProduct(int id, PutProductDTO dto)
     {
-        if (id != product.Id)
-            throw new ValidationException("ID in body and route are different");
-        var validation = _productValidator.Validate(product);
+       
+        var validation = _putProductValidator.Validate(dto);
         if (!validation.IsValid)
             throw new ValidationException(validation.ToString());
+        Product product = _mapper.Map<Product>(dto);
+        product.Id = id;
         return _productRepository.UpdateProduct(product);
     }
 

@@ -7,10 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/Product")]
 public class ProductController : ControllerBase
 {
-    private IProductService _productService;
+    private readonly IProductService _productService;
     
     public ProductController(IProductService productService)
     {
@@ -18,91 +18,100 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet]
-    [Route("products")]
-    public JsonResult GetAllProducts()
+    [Route("")]
+    public ActionResult<List<Product>> GetAllProducts()
     {
-        return new JsonResult(_productService.GetAllProducts());
+       try
+        {
+            return Ok(_productService.GetAllProducts());
+        }
+        catch (Exception ex) 
+        {
+            return StatusCode(500, ex.ToString());
+        }
+    }
+
+    [HttpGet]
+    [Route("/{id}")] //localhost:5001/product/42
+    public ActionResult<Product> GetProductById(int id)
+    {
+        try
+        {
+            return Ok(_productService.GetProductById(id));
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.ToString());
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.ToString());
+        }
     }
 
     [HttpPost]
     [Route("")]
-    public JsonResult CreateNewProduct(PostProductDTO dto)
+    public ActionResult<Product> CreateNewProduct(PostProductDTO dto)
     {
         try
         {
-            var result = _productService.CreateNewProduct(dto);
-            return new JsonResult(Created("", result));
+            var product = _productService.CreateNewProduct(dto);
+            return Ok(Created($"product/{product.Id}", product));
         }
-        catch (ValidationException v)
+        catch (ValidationException ex)
         {
-            return new JsonResult(BadRequest(v.Message));
+            return BadRequest(ex.ToString());
         }
-        catch (Exception e)
+        catch (ArgumentException ex) 
         {
-            return new JsonResult(StatusCode(500, e.Message));
+            return StatusCode(403, ex.ToString());
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.ToString());
         }
     }
 
-    [HttpGet]
-    [Route("{id}")] //localhost:5001/product/42
-    public JsonResult GetProductById(int id)
-    {
-        try
-        {
-            return new JsonResult(_productService.GetProductById(id));
-        }
-        catch (KeyNotFoundException e)
-        {
-            return new JsonResult(NotFound("No product found at ID " + id));
-        }
-        catch (Exception e)
-        {
-            return new JsonResult(StatusCode(500, e.ToString()));
-        }
-    }
-
-
-    [HttpGet]
-    [Route("RebuildDB")]
-    public void RebuildDB()
-    {
-        _productService.RebuildDB();
-    }
 
     [HttpPut]
-    [Route("{id}")] //localhost:5001/product/8732648732
-    public JsonResult UpdateProduct([FromRoute] int id, [FromBody] Product product)
+    [Route("/{id}")] //localhost:5001/product/8732648732
+    public ActionResult<Product> UpdateProduct([FromRoute] int id, [FromBody] PutProductDTO product)
     {
         try
         {
-            return new JsonResult(Ok(_productService.UpdateProduct(id, product)));
+            var result = _productService.UpdateProduct(id, product);
+            return Ok(result);
         }
-        catch (KeyNotFoundException e)
+        catch (KeyNotFoundException ex)
         {
-            return new JsonResult(NotFound("No product found at ID " + id));
+            return NotFound(ex.ToString());
         }
-        catch (Exception e)
+        catch (ValidationException ex)
         {
-            return new JsonResult(StatusCode(500, e.ToString()));
+            return BadRequest(ex.ToString());
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.ToString());
         }
     }
 
 
     [HttpDelete]
-    [Route("{id}")]
-    public JsonResult DeleteProduct(int id)
+    [Route("/{id}")]
+    public ActionResult<Product> DeleteProduct(int id)
     {
         try
         {
-            return new JsonResult(Ok(_productService.DeleteProduct(id)));
+            return Ok(_productService.DeleteProduct(id));
         }
-        catch (KeyNotFoundException e)
+        catch (KeyNotFoundException ex)
         {
-            return new JsonResult(NotFound("No product found at ID " + id));
+            return NotFound(ex.ToString());
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            return new JsonResult(StatusCode(500, e.ToString()));
+            return StatusCode(500, ex.ToString());
         }
     }
 }

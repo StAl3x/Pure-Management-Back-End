@@ -1,38 +1,48 @@
 ﻿using Application.Interfaces;
 using Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Infrastructure 
 {
-    internal class WarehouseRepository : IWarehouseRepository
+    public class WarehouseRepository : IWarehouseRepository
     {
-        public Warehouse CreateNewWarehouse(Warehouse warehouse)
-        {
-            throw new NotImplementedException();
-        }
+        private readonly AppDbContext _context;
 
-        public Warehouse DeleteWarehouse(int id)
+        public WarehouseRepository(AppDbContext context) 
         {
-            throw new NotImplementedException();
+            _context = context;
         }
-
         public List<Warehouse> GetAllWarehouses()
         {
-            throw new NotImplementedException();
+            return _context.WarehouseTable.ToList();
         }
 
         public Warehouse GetWarehouseById(int id)
         {
-            throw new NotImplementedException();
+            return _context.WarehouseTable.Find(id) ?? throw new KeyNotFoundException();
+        }
+        public Warehouse CreateNewWarehouse(Warehouse warehouse)
+        {
+            _context.WarehouseTable.Add(warehouse);
+            _context.SaveChanges();
+            return warehouse;
         }
 
         public Warehouse UpdateWarehouse(Warehouse warehouse)
         {
-            throw new NotImplementedException();
+            _context.WarehouseTable.Update(warehouse);
+            _context.SaveChanges();
+            return warehouse;
         }
+
+        public Warehouse DeleteWarehouse(int id)
+        {
+            var warehouseToDelete = _context.WarehouseTable.Find(id) ?? throw new KeyNotFoundException();
+            _context.WarehouseTable.Remove(warehouseToDelete);
+            _context.SaveChanges();
+            return warehouseToDelete;
+        }
+
+
     }
 }

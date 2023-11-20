@@ -44,7 +44,7 @@ public class ProductRepository : IProductRepository
 
     public Product DeleteProduct(int id)
     {
-        var productToDelete = _context.ProductTable.Find(id) ?? throw new KeyNotFoundException();
+        Product productToDelete = _context.ProductTable.Find(id) ?? throw new KeyNotFoundException();
         _context.ProductTable.Remove(productToDelete);
         _context.SaveChanges();
         return productToDelete;

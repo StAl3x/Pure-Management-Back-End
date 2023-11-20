@@ -21,6 +21,8 @@ builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssembli
 var mapper = new MapperConfiguration(configuration =>
 {
     configuration.CreateMap<PostProductDTO, Product>();
+    configuration.CreateMap<PutProductDTO, Product>();
+    configuration.CreateMap<PostWarehouseDTO, Warehouse>();
 }).CreateMapper();
 builder.Services.AddSingleton(mapper);
 
