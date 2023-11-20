@@ -14,12 +14,12 @@ namespace Application.DTOs
         public int CompanyId { get; set; }
     }
 
-    public class PartualUpdateWarehouseDTO
+    public class PutWarehouseDTO
     {
         public string? Address { get; set; }
         public string? EmailAddress { get; set; }
         public string? Name { get; set; }
         public int CompanyId { get; set; }
-        public int Id { get; set; }
+        
     }
 }

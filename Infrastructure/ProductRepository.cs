@@ -29,12 +29,6 @@ public class ProductRepository : IProductRepository
         return _context.ProductTable.Find(id) ?? throw new KeyNotFoundException();
     }
 
-    public void RebuildDB()
-    {
-        _context.Database.EnsureDeleted();
-        _context.Database.EnsureCreated();
-    }
-
     public Product UpdateProduct(Product product)
     {
         _context.ProductTable.Update(product);

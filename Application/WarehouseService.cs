@@ -1,9 +1,11 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
-using Application.Validators;
 using AutoMapper;
 using Domain;
+using Domain.Interfaces;
 using FluentValidation;
+using ValidationException = FluentValidation.ValidationException;
+
 
 namespace Application
 {
@@ -11,21 +13,35 @@ namespace Application
     { 
         private readonly IWarehouseRepository _warehouseRepository;
         private readonly IValidator<PostWarehouseDTO> _postValidator;
-        private readonly IValidator<Warehouse> _warehouseValidator;
+        private readonly IValidator<PutWarehouseDTO> _putWarehouseValidator;
         private readonly IMapper _mapper;
 
         public WarehouseService(
         IWarehouseRepository repository,
         IValidator<PostWarehouseDTO> postValidator,
-        IValidator<Warehouse> warehouseValidator,
+        IValidator<PutWarehouseDTO> putWarehouseValidator,
         IMapper mapper)
         {
             _mapper = mapper;
             _postValidator = postValidator;
-            _warehouseValidator = warehouseValidator;
+            _putWarehouseValidator = putWarehouseValidator;
             _warehouseRepository = repository;
         }
-        public List<Warehouse> GetAllWarehouse()
+
+        public Warehouse CreateNewWarehouse(PostWarehouseDTO dto)
+        {
+            var validation = _postValidator.Validate(dto);
+            if (!validation.IsValid)
+                throw new ValidationException(validation.ToString());
+            return _warehouseRepository.CreateNewWarehouse(_mapper.Map<Warehouse>(dto));
+        }
+
+        public Warehouse DeleteWarehouse(int id)
+        {
+            return _warehouseRepository.DeleteWarehouse(id);
+        }
+
+        public List<Warehouse> GetAllWarehouses()
         {
             return _warehouseRepository.GetAllWarehouses();
         }
@@ -34,28 +50,15 @@ namespace Application
         {
             return _warehouseRepository.GetWarehouseById(id);
         }
-        public Warehouse CreateNewWarehouse(PostWarehouseDTO dto)
-        {
-            var validation = _postValidator.Validate(dto);
-            if (!validation.IsValid)
-                throw new ValidationException(validation.ToString());
 
-            return _warehouseRepository.CreateNewWarehouse(_mapper.Map<Warehouse>(dto));
-        }
-        public Warehouse UpdateWarehouse(int id, Warehouse warehouse)
+        public Warehouse UpdateWarehouse(int id, PutWarehouseDTO dto)
         {
-            if (id != warehouse.Id)
-                throw new ValidationException("ID in body and route are different");
-            var validation = _warehouseValidator.Validate(warehouse);
-            if (!validation.IsValid)
+            var validation = _putWarehouseValidator.Validate(dto);
+            if(!validation.IsValid)
                 throw new ValidationException(validation.ToString());
+            Warehouse warehouse = _mapper.Map<Warehouse>(dto);
+            warehouse.Id = id;
             return _warehouseRepository.UpdateWarehouse(warehouse);
         }
-        public Warehouse DeleteWarehouse(int id)
-        {
-            return _warehouseRepository.DeleteWarehouse(id);
-        }
-
-       
     }
 }

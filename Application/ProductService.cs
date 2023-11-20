@@ -38,18 +38,16 @@ public class ProductService : IProductService
         var validation = _postValidator.Validate(dto);
         if (!validation.IsValid)
             throw new ValidationException(validation.ToString());
-
-        return _productRepository.CreateNewProduct(_mapper.Map<Product>(dto));
+        Product product = _mapper.Map<Product>(dto);
+        product.PricePerUnit = Math.Round(product.PricePerUnit, 2);
+        return _productRepository.CreateNewProduct(product);
     }
 
     public Product GetProductById(int id)
     {
-        return _productRepository.GetProductById(id);
-    }
-
-    public void RebuildDB()
-    {
-        _productRepository.RebuildDB();
+        Product product = _productRepository.GetProductById(id);
+        product.PricePerUnit = Math.Round(product.PricePerUnit, 2);
+        return product;
     }
 
     public Product UpdateProduct(int id, PutProductDTO dto)
@@ -60,6 +58,7 @@ public class ProductService : IProductService
             throw new ValidationException(validation.ToString());
         Product product = _mapper.Map<Product>(dto);
         product.Id = id;
+        product.PricePerUnit = Math.Round(product.PricePerUnit, 2);
         return _productRepository.UpdateProduct(product);
     }
 
