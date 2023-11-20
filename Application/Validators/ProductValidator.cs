@@ -17,7 +17,7 @@ public class ProductValidator : AbstractValidator<Product>
 {
     public ProductValidator()
     {
-        RuleFor(p => p.Price).GreaterThan(0);
+        RuleFor(p => p.PricePerUnit).GreaterThan(0);
         RuleFor(p => p.Name).NotEmpty();
         RuleFor(p => p.Id).GreaterThan(0);
     }

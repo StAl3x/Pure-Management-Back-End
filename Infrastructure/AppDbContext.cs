@@ -41,4 +41,5 @@ public class AppDbContext : DbContext
 }
     
     public DbSet<Product> ProductTable { get; set; }
+    public DbSet<Warehouse> WarehouseTable { get; set; }
 }
