@@ -24,9 +24,8 @@ var mapper = new MapperConfiguration(configuration =>
 }).CreateMapper();
 builder.Services.AddSingleton(mapper);
 
-builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(
-    "Data source=db.db"
-    ));
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PureManagementConnection")));
 
 
 Application.DependencyResolver
