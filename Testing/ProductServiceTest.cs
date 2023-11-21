@@ -116,7 +116,7 @@ public class ProductServiceTest
 
         var mapper = new MapperConfiguration(c => { 
             c.CreateMap<PostProductDTO, Product>();
-            c.CreateMap<PutWarehouseDTO, Product>();
+            c.CreateMap<PutProductDTO, Product>();
         }).CreateMapper();
         var postValidator = new PostProductValidator();
         var putValidator = new PutProductValidator();
