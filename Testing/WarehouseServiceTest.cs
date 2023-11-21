@@ -37,6 +37,7 @@ public class WarehouseServiceTest
         
 
         Assert.IsNotNull(response);
+        Assert.IsNotNull(response.Id);
         Assert.AreEqual(moqId, response.Id);
     }
 
