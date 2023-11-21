@@ -31,35 +31,5 @@ public class ProductRepositoryTest
         Assert.IsNotNull(response);
     }
 
-    //[TestMethod]
-    //public void GetProductById()
-    //{
-    //    var opts = new DbContextOptionsBuilder<AppDbContext>()
-    //        .UseInMemoryDatabase(databaseName: "ProductDatabase")
-    //        .Options;
-            
-        
-    //    using (var context = new AppDbContext(opts)) 
-    //    {
-            
-    //        context.Database.EnsureDeleted();
-    //        context.Database.EnsureCreated();
-    //        context.ProductTable.Add(new Product() {
-    //            Id = 1,
-    //            Name = "productOne",
-    //            PricePerUnit = 12.33,
-    //            Unit = "foot"
-    //        });
-    //        context.SaveChanges();
-
-    //        IProductRepository productRepository = new ProductRepository(context);
-
-    //        Product response = productRepository.GetProductById(1);
-
-    //        Assert.AreEqual(response.Name, "productOne");
-    //    }
-
-        
-    //}
 
 }
