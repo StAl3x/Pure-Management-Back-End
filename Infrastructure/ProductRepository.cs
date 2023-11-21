@@ -9,7 +9,7 @@ public class ProductRepository : IProductRepository
 
     public ProductRepository(AppDbContext context)
     {
-        _context = context;
+        _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
     public List<Product> GetAllProducts()
@@ -27,12 +27,6 @@ public class ProductRepository : IProductRepository
     public Product GetProductById(int id)
     {
         return _context.ProductTable.Find(id) ?? throw new KeyNotFoundException();
-    }
-
-    public void RebuildDB()
-    {
-        _context.Database.EnsureDeleted();
-        _context.Database.EnsureCreated();
     }
 
     public Product UpdateProduct(Product product)

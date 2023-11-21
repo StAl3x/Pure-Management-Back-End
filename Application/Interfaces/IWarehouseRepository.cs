@@ -12,7 +12,7 @@ namespace Application.Interfaces
         public List<Warehouse> GetAllWarehouses();
         public Warehouse CreateNewWarehouse(Warehouse warehouse);
         public Warehouse GetWarehouseById(int id);
-        public Warehouse UpdateWarehouse(Warehouse warehouse);
+        public Warehouse UpdateWarehouse(Warehouse dto);
         public Warehouse DeleteWarehouse(int id);
     }
 }

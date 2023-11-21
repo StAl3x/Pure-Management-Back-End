@@ -15,11 +15,10 @@ public  class PostWarehouseValidator : AbstractValidator<PostWarehouseDTO>
     }
 }
 
-public class WarehouseValidator : AbstractValidator<Warehouse>
+public class PutWarehouseValidator : AbstractValidator<PutWarehouseDTO>
 { 
-    public WarehouseValidator() 
+    public PutWarehouseValidator() 
     { 
-        RuleFor(w => w.Id).GreaterThan(0);
         RuleFor(w => w.Address).NotEmpty();
         RuleFor(w => w.EmailAddress).NotEmpty();
         RuleFor(w => w.CompanyId).GreaterThan(0);

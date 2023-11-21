@@ -1,4 +1,5 @@
 using Application.DTOs;
+using Application.Validators;
 using AutoMapper;
 using Domain;
 using FluentValidation;
@@ -23,6 +24,7 @@ var mapper = new MapperConfiguration(configuration =>
     configuration.CreateMap<PostProductDTO, Product>();
     configuration.CreateMap<PutProductDTO, Product>();
     configuration.CreateMap<PostWarehouseDTO, Warehouse>();
+    configuration.CreateMap<PutWarehouseDTO, Warehouse>();
 }).CreateMapper();
 builder.Services.AddSingleton(mapper);
 
