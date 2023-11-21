@@ -22,7 +22,7 @@ builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssembli
 var mapper = new MapperConfiguration(configuration =>
 {
     configuration.CreateMap<PostProductDTO, Product>();
-    configuration.CreateMap<PutProductDTO, Product>();
+    configuration.CreateMap<PutWarehouseDTO, Product>();
     configuration.CreateMap<PostWarehouseDTO, Warehouse>();
     configuration.CreateMap<PutWarehouseDTO, Warehouse>();
 }).CreateMapper();

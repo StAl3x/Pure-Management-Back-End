@@ -12,7 +12,7 @@ namespace Application
     public class WarehouseService : IWarehouseService
     { 
         private readonly IWarehouseRepository _warehouseRepository;
-        private readonly IValidator<PostWarehouseDTO> _postValidator;
+        private readonly IValidator<PostWarehouseDTO> _postWarehouseValidator;
         private readonly IValidator<PutWarehouseDTO> _putWarehouseValidator;
         private readonly IMapper _mapper;
 
@@ -22,15 +22,15 @@ namespace Application
         IValidator<PutWarehouseDTO> putWarehouseValidator,
         IMapper mapper)
         {
-            _mapper = mapper;
-            _postValidator = postValidator;
-            _putWarehouseValidator = putWarehouseValidator;
-            _warehouseRepository = repository;
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _postWarehouseValidator = postValidator ?? throw new ArgumentNullException(nameof(_postWarehouseValidator));
+            _putWarehouseValidator = putWarehouseValidator ?? throw new ArgumentNullException(nameof(_putWarehouseValidator));
+            _warehouseRepository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
         public Warehouse CreateNewWarehouse(PostWarehouseDTO dto)
         {
-            var validation = _postValidator.Validate(dto);
+            var validation = _postWarehouseValidator.Validate(dto);
             if (!validation.IsValid)
                 throw new ValidationException(validation.ToString());
             return _warehouseRepository.CreateNewWarehouse(_mapper.Map<Warehouse>(dto));

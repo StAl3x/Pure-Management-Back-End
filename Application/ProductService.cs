@@ -11,7 +11,7 @@ namespace Application;
 public class ProductService : IProductService
 {
     private readonly IProductRepository _productRepository;
-    private readonly IValidator<PostProductDTO> _postValidator;
+    private readonly IValidator<PostProductDTO> _postProductValidator;
     private readonly IValidator<PutProductDTO> _putProductValidator;
     private readonly IMapper _mapper;
 
@@ -22,10 +22,10 @@ public class ProductService : IProductService
         IValidator<PutProductDTO> putProductValidator,
         IMapper mapper)
     {
-        _mapper = mapper;
-        _postValidator = postValidator;
-        _putProductValidator = putProductValidator;
-        _productRepository = repository;
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _postProductValidator = postValidator ?? throw new ArgumentNullException(nameof(_postProductValidator));
+        _putProductValidator = putProductValidator ?? throw new ArgumentNullException(nameof(putProductValidator));
+        _productRepository = repository ?? throw new ArgumentNullException(nameof(repository));
     }
 
     public List<Product> GetAllProducts()
@@ -35,7 +35,7 @@ public class ProductService : IProductService
 
     public Product CreateNewProduct(PostProductDTO dto)
     {
-        var validation = _postValidator.Validate(dto);
+        var validation = _postProductValidator.Validate(dto);
         if (!validation.IsValid)
             throw new ValidationException(validation.ToString());
         Product product = _mapper.Map<Product>(dto);

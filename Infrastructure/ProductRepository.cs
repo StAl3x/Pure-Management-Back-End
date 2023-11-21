@@ -9,7 +9,7 @@ public class ProductRepository : IProductRepository
 
     public ProductRepository(AppDbContext context)
     {
-        _context = context;
+        _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
     public List<Product> GetAllProducts()
