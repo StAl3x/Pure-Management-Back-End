@@ -7,8 +7,8 @@ public class Product
     public double PricePerUnit { get; set; }
     public string Unit { get; set; }
 
-    public int CompanyId {  get; set; }
-    public virtual Company Company { get; set; }
+    public int CompanyId { get; set; }
+    public Company Company { get; set; }
 
 
 

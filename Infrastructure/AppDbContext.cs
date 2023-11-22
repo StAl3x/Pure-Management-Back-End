@@ -5,8 +5,8 @@ namespace Infrastructure;
 
 public class AppDbContext : DbContext
 {
-    
 
+  
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {
         
     }
@@ -18,16 +18,25 @@ public class AppDbContext : DbContext
     {
         optionsBuilder.UseNpgsql(ConnStr.Get());
     }
+    public DbSet<Product> ProductTable { get; set; }
+    public DbSet<Warehouse> WarehouseTable { get; set; }
+    public DbSet<User> UserTable { get; set; }
+    public DbSet<Company> CompanyTable { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        
+
+    modelBuilder.Entity<Company>()
+            .Property(c => c.Id)
+            .ValueGeneratedOnAdd();
         modelBuilder.Entity<Product>()
             .Property(p => p.Id)
             .ValueGeneratedOnAdd();
         modelBuilder.Entity<Product>()
             .HasOne(p => p.Company)
             .WithMany(c => c.Products)
-            .HasForeignKey(p => p.Company.Id)
+            .HasForeignKey(p => p.CompanyId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
@@ -50,11 +59,6 @@ public class AppDbContext : DbContext
             .HasForeignKey(u => u.CompanyId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
-        
-
-        modelBuilder.Entity<Company>()
-            .Property (c => c.Id)
-            .ValueGeneratedOnAdd(); 
 
     }
 
@@ -74,8 +78,5 @@ public class AppDbContext : DbContext
         }
     }
     
-        public DbSet<Product> ProductTable { get; set; }
-        public DbSet<Warehouse> WarehouseTable { get; set; }
-        public DbSet<User> UserTable { get; set; }
-        public DbSet<Company> CompanyTable { get; set; }
+        
     }
