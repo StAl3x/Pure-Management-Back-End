@@ -5,6 +5,7 @@ using Domain;
 using FluentValidation;
 using Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.InteropServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,10 @@ var mapper = new MapperConfiguration(configuration =>
     configuration.CreateMap<PutProductDTO, Product>();
     configuration.CreateMap<PostWarehouseDTO, Warehouse>();
     configuration.CreateMap<PutWarehouseDTO, Warehouse>();
+    configuration.CreateMap<PostCompanyDTO, Company>();
+    configuration.CreateMap<PutCompanyDTO, Company>();
+    configuration.CreateMap<PostUserDTO, User>();
+    configuration.CreateMap<PutUserDTO, User>();
 }).CreateMapper();
 builder.Services.AddSingleton(mapper);
 

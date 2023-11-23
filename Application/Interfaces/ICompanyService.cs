@@ -9,7 +9,7 @@ namespace Application.Interfaces
         public List<Company> GetAll();
         public Company Create(PostCompanyDTO dto);
         public Company GetById(int id);
-        public Company Update(PutCompanyDTO dto);
+        public Company Update(int id, PutCompanyDTO dto);
         public Company Delete(int id);
         public List<Warehouse> GetWarehouses();
         public List<Product> GetProducts();

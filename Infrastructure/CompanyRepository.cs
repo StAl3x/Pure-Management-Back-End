@@ -15,22 +15,27 @@ public class CompanyRepository : ICompanyRepository
     }
     public Company Create(Company company)
     {
-        throw new NotImplementedException();
+        _context.CompanyTable.Add(company);
+        _context.SaveChanges();
+        return company;
     }
 
     public Company Delete(int id)
     {
-        throw new NotImplementedException();
+        Company companyToDelete = _context.CompanyTable.Find(id) ?? throw new KeyNotFoundException();
+        _context.CompanyTable.Remove(companyToDelete);
+        _context.SaveChanges();
+        return companyToDelete;
     }
 
     public List<Company> GetAll()
     {
-        throw new NotImplementedException();
+        return _context.CompanyTable.ToList();
     }
 
     public Company GetById(int id)
     {
-        throw new NotImplementedException();
+        return _context.CompanyTable.Find(id) ?? throw new KeyNotFoundException();
     }
 
     public List<Product> GetProducts()
@@ -47,9 +52,11 @@ public class CompanyRepository : ICompanyRepository
     {
         throw new NotImplementedException();
     }
-
+    //this will return the original company, to compare it with the new, call getById with the same id 
     public Company Update(Company company)
     {
-        throw new NotImplementedException();
+        _context.CompanyTable.Update(company);
+        _context.SaveChanges();
+        return company;
     }
 }
