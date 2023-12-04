@@ -11,8 +11,8 @@ namespace Application.Interfaces
         public Company GetById(int id);
         public Company Update(int id, PutCompanyDTO dto);
         public Company Delete(int id);
-        public List<Warehouse> GetWarehouses();
-        public List<Product> GetProducts();
-        public List<User> GetUsers();
+        public List<Warehouse> GetWarehouses(int companyId);
+        public List<Product> GetProducts(int companyId);
+        public List<User> GetUsers(int companyId);
     }
 }

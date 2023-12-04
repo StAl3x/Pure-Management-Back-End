@@ -1,6 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
 using AutoMapper;
+using Domain;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
@@ -29,4 +30,38 @@ public class UserService : IUserService
         _putValidator = putValidator ?? throw new ArgumentNullException(nameof(putValidator));
         _repository = repository ?? throw new ArgumentNullException(nameof(repository));
     }
+
+    public List<User> GetAll()
+    {
+        return _repository.GetAll();
+    }
+
+    public User GetById(int id)
+    {
+        return _repository.GetById(id);
+    }
+    public User Create(PostUserDTO dto)
+    {
+        var validation = _postValidator.Validate(dto);
+        if (!validation.IsValid)
+            throw new ValidationException(validation.ToString());
+        User user = _mapper.Map<User>(dto);
+        return _repository.Create(user);
+    }
+
+    public User Update(int id, PutUserDTO dto)
+    {
+        var validation = _putValidator.Validate(dto);
+        if(!validation.IsValid)
+            throw new ValidationException(validation.ToString());
+        User user = _mapper.Map<User>(dto);
+        user.Id = id;
+        return _repository.Update(user);
+    }
+
+    public User Delete(int id)
+    {
+        return _repository.Delete(id);
+    }
+
 }

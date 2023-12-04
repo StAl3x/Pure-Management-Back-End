@@ -4,6 +4,7 @@ using Domain;
 using Domain.Interfaces;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.CodeAnalysis;
 
 namespace API.Controllers;
 
@@ -24,7 +25,7 @@ public class WarehouseController : ControllerBase
     {
         try
         {
-            return Ok(_warehouseService.GetAllWarehouses());
+            return Ok(_warehouseService.GetAll());
         }
         catch (Exception ex)
         {
@@ -38,7 +39,7 @@ public class WarehouseController : ControllerBase
     {
         try
         {
-            return Ok(_warehouseService.GetWarehouseById(id));
+            return Ok(_warehouseService.GetById(id));
         }
         catch (KeyNotFoundException ex)
         {
@@ -56,7 +57,7 @@ public class WarehouseController : ControllerBase
     {
         try
         {
-            var warehouse = _warehouseService.CreateNewWarehouse(dto);
+            var warehouse = _warehouseService.Create(dto);
             return Ok(Created($"product/{warehouse.Id}", warehouse));
         }
         catch (ValidationException ex)
@@ -80,7 +81,7 @@ public class WarehouseController : ControllerBase
     {
         try
         {
-            var result = _warehouseService.UpdateWarehouse(id, dto);
+            var result = _warehouseService.Update(id, dto);
             return Ok(result);
         }
         catch (KeyNotFoundException ex)
@@ -104,7 +105,7 @@ public class WarehouseController : ControllerBase
     {
         try
         {
-            return Ok(_warehouseService.DeleteWarehouse(id));
+            return Ok(_warehouseService.Delete(id));
         }
         catch (KeyNotFoundException ex)
         {
@@ -115,4 +116,111 @@ public class WarehouseController : ControllerBase
             return StatusCode(500, ex.ToString());
         }
     }
+
+    [HttpGet]
+    [Route("product/{id}")]
+    public ActionResult<List<Product>> GetProducts([FromRoute] int id) 
+    {
+        try
+        {
+            return Ok(_warehouseService.GetProducts(id));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.ToString());
+        }
+    }
+
+    [HttpPost]
+    [Route("product/")]
+    public ActionResult<Product> CreateProduct([FromBody] PostProductModel model) 
+    {
+        var pinDTO = model.PinDTO;
+        var productDTO = model.ProductDTO;
+
+        try
+        {
+            var result = _warehouseService.CreateProduct(pinDTO, productDTO);
+            return Ok(result);
+        }
+        catch (ValidationException ex)
+        {
+            return BadRequest(ex.ToString());
+        }
+        catch (ArgumentException ex)
+        {
+            return StatusCode(403, ex.ToString());
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.ToString());
+        }
+    }
+
+    [HttpPut]
+    [Route("product/")]
+    public ActionResult<Product> UpdateProduct([FromBody] PutProductModel model) 
+    {
+        var pinDTO = model.PinDTO;
+        var productDTO = model.ProductDTO;
+        try
+        {
+            var resutl = _warehouseService.UpdateProduct(pinDTO, productDTO);
+            return Ok(resutl);
+        }
+        catch (ValidationException ex)
+        {
+            return BadRequest(ex.ToString());
+        }
+        catch (ArgumentException ex)
+        {
+            return StatusCode(403, ex.ToString());
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.ToString());
+        }
+    }
+
+    [HttpDelete]
+    [Route("product/{id}")]
+    public ActionResult<Product> DeleteProduct([FromRoute] int id, [FromBody] bool deleteFromProductTable)
+    {
+        try
+        {
+            return Ok(_warehouseService.DeleteProduct(id, deleteFromProductTable));
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.ToString());
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.ToString());
+        }
+    }
+
+    [HttpPost]
+    [Route("productAdd/")]
+    public ActionResult<Product> AddProduct([FromBody] PostProductInWarehouseDTO pinDTO)
+    {
+        try
+        {
+            var result = _warehouseService.AddProduct(pinDTO);
+            return Ok(result);
+        }
+        catch (ValidationException ex)
+        {
+            return BadRequest(ex.ToString());
+        }
+        catch (ArgumentException ex)
+        {
+            return StatusCode(403, ex.ToString());
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.ToString());
+        }
+    }
+
 }

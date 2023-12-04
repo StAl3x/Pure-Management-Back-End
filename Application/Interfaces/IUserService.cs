@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Application.DTOs;
+using Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,4 +10,9 @@ namespace Application.Interfaces;
 
 public interface IUserService
 {
+    public List<User> GetAll();
+    public User Create(PostUserDTO dto);
+    public User GetById(int id);
+    public User Update(int id, PutUserDTO dto);
+    public User Delete(int id);
 }

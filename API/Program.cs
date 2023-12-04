@@ -30,6 +30,9 @@ var mapper = new MapperConfiguration(configuration =>
     configuration.CreateMap<PutCompanyDTO, Company>();
     configuration.CreateMap<PostUserDTO, User>();
     configuration.CreateMap<PutUserDTO, User>();
+    configuration.CreateMap<PostProductInWarehouseDTO, ProductInWarehouse>();
+    configuration.CreateMap<PutProductInWarehouseDTO, ProductInWarehouse>();
+
 }).CreateMapper();
 builder.Services.AddSingleton(mapper);
 

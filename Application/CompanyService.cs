@@ -54,19 +54,19 @@ public class CompanyService : ICompanyService
         return _repository.GetById(id);
     }
 
-    public List<Product> GetProducts()
+    public List<Product> GetProducts(int companyId)
     {
-        return _repository.GetProducts();
+        return _repository.GetProducts(companyId);
     }
 
-    public List<User> GetUsers()
+    public List<User> GetUsers(int companyId)
     {
-        return _repository.GetUsers();
+        return _repository.GetUsers(companyId);
     }
 
-    public List<Warehouse> GetWarehouses()
+    public List<Warehouse> GetWarehouses(int companyId)
     {
-        return _repository.GetWarehouses();
+        return _repository.GetWarehouses(companyId);
     }
 
     public Company Update(int id, PutCompanyDTO dto)

@@ -16,3 +16,23 @@ public class PutProductDTO
     public string? Unit { get; set; }
     
 }
+
+public class PostProductWarehouseDTO 
+{
+    public string Name { get; set; }
+    public double PricePerUnit { get; set; }
+    public string Unit { get; set; }
+    public string CompanyId { get; set; }
+    public int ProductId { get; set; }
+    public int Quantity { get; set; }
+}
+
+public class PutProductWarehouseDTO
+{
+    public string? Name { get; set; }
+    public double? PricePerUnit { get; set; }
+    public string? Unit { get; set; }
+    public string CompanyId { get; set; }
+    public int ProductId { get; set; }
+    public int ? Quantity { get; set; }
+}

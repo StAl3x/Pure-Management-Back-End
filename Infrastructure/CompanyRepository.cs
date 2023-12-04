@@ -38,25 +38,25 @@ public class CompanyRepository : ICompanyRepository
         return _context.CompanyTable.Find(id) ?? throw new KeyNotFoundException();
     }
 
-    public List<Product> GetProducts()
+    public List<Product> GetProducts(int companyId)
     {
-        throw new NotImplementedException();
+        return _context.ProductTable.Where(p => p.CompanyId == companyId).ToList();
     }
 
-    public List<User> GetUsers()
+    public List<User> GetUsers(int companyId)
     {
-        throw new NotImplementedException();
+        return _context.UserTable.Where(u => u.CompanyId == companyId).ToList();
     }
 
-    public List<Warehouse> GetWarehouses()
+    public List<Warehouse> GetWarehouses(int companyId)
     {
-        throw new NotImplementedException();
+        return _context.WarehouseTable.Where(w => w.CompanyId == companyId).ToList();
     }
     //this will return the original company, to compare it with the new, call getById with the same id 
     public Company Update(Company company)
     {
         _context.CompanyTable.Update(company);
         _context.SaveChanges();
-        return company;
+        return _context.CompanyTable.Find(company.Id) ?? throw new KeyNotFoundException();
     }
 }

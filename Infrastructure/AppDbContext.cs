@@ -22,6 +22,7 @@ public class AppDbContext : DbContext
     public DbSet<Warehouse> WarehouseTable { get; set; }
     public DbSet<User> UserTable { get; set; }
     public DbSet<Company> CompanyTable { get; set; }
+    public DbSet<ProductInWarehouse> ProductWarehouseTable { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -60,14 +61,26 @@ public class AppDbContext : DbContext
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
+        modelBuilder.Entity<ProductInWarehouse>()
+            .Property(p => p.Id)
+            .ValueGeneratedOnAdd();
+        modelBuilder.Entity<ProductInWarehouse>()
+            .HasOne(pW => pW.Product)
+            .WithMany(p => p.Products)
+            .HasForeignKey(pW => pW.ProductId);
+        modelBuilder.Entity<ProductInWarehouse>()
+            .HasOne(pw => pw.Warehouse)
+            .WithMany(w => w.Products)
+            .HasForeignKey(pw => pw.WarehouseId);
+
     }
 
     public class ConnStr
     {
         public static string Get()
         {
-            var uriString = Environment.GetEnvironmentVariable("ConnectionString") ?? throw new ArgumentNullException("Connection String : is null");
-            var uri = new Uri(uriString);
+            //var uriString = Environment.GetEnvironmentVariable("ConnectionString") ?? throw new ArgumentNullException("Connection String : is null");
+            var uri = new Uri("postgres://othoreah:R6FOMu4sqJT_cTsVh7d4xViiRnFQVEoR@cornelius.db.elephantsql.com/othoreah");
             var db = uri.AbsolutePath.Trim('/');
             var user = uri.UserInfo.Split(':')[0];
             var passwd = uri.UserInfo.Split(':')[1];
