@@ -79,8 +79,8 @@ public class AppDbContext : DbContext
     {
         public static string Get()
         {
-            //var uriString = Environment.GetEnvironmentVariable("ConnectionString") ?? throw new ArgumentNullException("Connection String : is null");
-            var uri = new Uri("postgres://othoreah:R6FOMu4sqJT_cTsVh7d4xViiRnFQVEoR@cornelius.db.elephantsql.com/othoreah");
+            var uriString = Environment.GetEnvironmentVariable("ConnectionString") ?? throw new ArgumentNullException("Connection String : is null");
+            var uri = new Uri(uriString);
             var db = uri.AbsolutePath.Trim('/');
             var user = uri.UserInfo.Split(':')[0];
             var passwd = uri.UserInfo.Split(':')[1];
