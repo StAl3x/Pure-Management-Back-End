@@ -13,7 +13,7 @@ namespace Domain
         public int ProductId { get; set; }
         public int WarehouseId { get; set; }
        
-        public Product Product { get; set; }
+        public virtual Product Product { get; set; }
         public virtual Warehouse Warehouse { get; set; }
 
     }

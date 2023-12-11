@@ -13,8 +13,13 @@ public interface IWarehouseService
     public Warehouse Delete(int id);
 
     public List<Product> GetProducts(int warehouseId);
-    public Product CreateProduct(PostProductInWarehouseDTO pin, PostProductDTO product);
-    public Product UpdateProduct(PutProductInWarehouseDTO pin, PutProductDTO product);
+    public Product CreateProduct(PostProductInWarehouseDTO pin, PostProductDTO productDTO);
+    public Product UpdateProduct(PutProductInWarehouseDTO pin, PutProductDTO productDTO);
     public Product DeleteProduct(int id, bool deleteFromProductTable);
     public Product AddProduct(PostProductInWarehouseDTO pinDTO);
+
+    public List<User> GetUsers(int warehouseId);
+    public User AddUser(PostUserInWarehouseDTO uiwDTO);
+    public User RemoveUser(int userId);
+    public User UpdateUserAccessLevel(PutUserInWarehouseDTO uiwDTO);
 }

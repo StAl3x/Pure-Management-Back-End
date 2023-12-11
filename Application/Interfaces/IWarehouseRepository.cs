@@ -22,5 +22,12 @@ namespace Application.Interfaces
         public Product UpdateProduct(ProductInWarehouse pin, Product product);
         public Product DeleteProduct(int id, bool deleteFromProductTable);
         public Product AddProduct(ProductInWarehouse pin);
+
+        // User in warehouse manipulation
+
+        public List<User> GetUsers(int warehouseId);
+        public User AddUser (UserInWarehouse uiw);
+        public User RemoveUser (int userId);
+        public User UpdateUserAccesLevel(UserInWarehouse uiw);
     }
 }

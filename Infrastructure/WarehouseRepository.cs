@@ -96,5 +96,41 @@ namespace Infrastructure
             Product product = _context.ProductTable.Find(pin.ProductId) ?? throw new KeyNotFoundException();
             return new Product() { Name = product.Name, Unit = product.Unit, PricePerUnit = product.PricePerUnit, CompanyId = product.CompanyId, Quantity = pin.Quantity };
         }
+
+        public List<User> GetUsers(int warehouseId)
+        {
+            List<UserInWarehouse> usersInWarehouse = _context.UserWarehouseTable.Where(uiw => uiw.WarehouseId == warehouseId).ToList();
+            List<User> users = new List<User>();
+            foreach (UserInWarehouse uiw in usersInWarehouse)
+            {
+                User resultUser = _context.UserTable.Find(uiw.UserId) ?? throw new KeyNotFoundException();
+                users.Add(resultUser);
+            }
+            return users;
+        }
+
+        public User AddUser(UserInWarehouse uiw)
+        {
+            _context.UserWarehouseTable.Add(uiw);
+            _context.SaveChanges();
+            return _context.UserTable.Find(uiw.UserId) ?? throw new KeyNotFoundException();
+            
+        }
+
+        public User RemoveUser(int userId)
+        {
+            User user = _context.UserTable.Find(userId) ?? throw new KeyNotFoundException();
+            UserInWarehouse uiwToDelete = (UserInWarehouse) _context.UserWarehouseTable.Where(uiw => uiw.UserId == userId).First();
+            _context.UserWarehouseTable.Remove(uiwToDelete);
+            _context.SaveChanges();
+            return user;
+        }
+
+        public User UpdateUserAccesLevel(UserInWarehouse uiw)
+        {
+            _context.UserWarehouseTable.Update(uiw);
+            _context.SaveChanges();
+            return _context.UserTable.Find(uiw.UserId) ?? throw new KeyNotFoundException();
+        }
     }
 }

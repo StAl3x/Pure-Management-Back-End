@@ -24,6 +24,9 @@ public class AppDbContext : DbContext
     public DbSet<Company> CompanyTable { get; set; }
     public DbSet<ProductInWarehouse> ProductWarehouseTable { get; set; }
 
+    public DbSet<UserInWarehouse> UserWarehouseTable { get; set; }
+
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         
@@ -72,6 +75,18 @@ public class AppDbContext : DbContext
             .HasOne(pw => pw.Warehouse)
             .WithMany(w => w.Products)
             .HasForeignKey(pw => pw.WarehouseId);
+
+        modelBuilder.Entity<UserInWarehouse>()
+            .Property(uiw => uiw.Id)
+            .ValueGeneratedOnAdd();
+        modelBuilder.Entity<UserInWarehouse>()
+            .HasOne(uiw => uiw.User)
+            .WithOne(u => u.UserInWarehouse)
+            .HasForeignKey<UserInWarehouse>(uiw => uiw.UserId);
+        modelBuilder.Entity<UserInWarehouse>()
+            .HasOne(uiw => uiw.Warehouse)
+            .WithMany(w => w.UserInWarehouse)
+            .HasForeignKey(uiw => uiw.WarehouseId);
 
     }
 

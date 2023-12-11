@@ -18,6 +18,8 @@ namespace Application
         private readonly IValidator<PutProductDTO> _putProductValidator;
         private readonly IValidator<PostProductInWarehouseDTO> _postPINValidator;
         private readonly IValidator<PutProductInWarehouseDTO> _putPINValidator;
+        private readonly IValidator<PostUserInWarehouseDTO> _postUIWValidator;
+        private readonly IValidator<PutUserInWarehouseDTO> _putUIWValidator;
         private readonly IMapper _mapper;
 
         public WarehouseService(
@@ -28,6 +30,8 @@ namespace Application
         IValidator<PutProductDTO> putProductValidator,
         IValidator<PostProductInWarehouseDTO> postPINValidator,
         IValidator<PutProductInWarehouseDTO> putPINValidator,
+        IValidator<PostUserInWarehouseDTO> postUIWValidator,
+        IValidator<PutUserInWarehouseDTO> putUIWValidator,
         IMapper mapper)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -37,6 +41,8 @@ namespace Application
             _putProductValidator = putProductValidator ?? throw new ArgumentNullException(nameof(_putProductValidator));
             _postPINValidator = postPINValidator ?? throw new ArgumentNullException(nameof(_postPINValidator));
             _putPINValidator = putPINValidator ?? throw new ArgumentNullException(nameof(_putPINValidator));
+            _postUIWValidator = postUIWValidator ?? throw new ArgumentNullException(nameof(_postUIWValidator));
+            _putUIWValidator = putUIWValidator ?? throw new ArgumentNullException(nameof(_putUIWValidator));
             _warehouseRepository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
@@ -110,6 +116,32 @@ namespace Application
             if(!validation.IsValid)
                 throw new ValidationException(validation.ToString());
             return _warehouseRepository.AddProduct(_mapper.Map<ProductInWarehouse>(pinDTO));
+        }
+
+        public List<User> GetUsers(int warehouseId)
+        {
+            return _warehouseRepository.GetUsers(warehouseId);
+        }
+
+        public User AddUser(PostUserInWarehouseDTO uiwDTO)
+        {
+            var validation = _postUIWValidator.Validate(uiwDTO);
+            if(!validation.IsValid)
+                    throw new ValidationException(validation.ToString());
+            return _warehouseRepository.AddUser(_mapper.Map<UserInWarehouse>(uiwDTO));
+        }
+
+        public User RemoveUser(int userId)
+        {
+            return _warehouseRepository.RemoveUser(userId);
+        }
+
+        public User UpdateUserAccessLevel(PutUserInWarehouseDTO uiwDTO)
+        {
+            var validation = _putUIWValidator.Validate(uiwDTO);
+            if(!validation.IsValid)
+                throw new ValidationException(validation.ToString());
+            return _warehouseRepository.UpdateUserAccesLevel(_mapper.Map<UserInWarehouse>(uiwDTO));
         }
     }
 }

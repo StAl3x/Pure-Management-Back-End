@@ -2,6 +2,7 @@
 using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231206142436_userWarehouseUpdate")]
+    partial class userWarehouseUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -155,7 +157,8 @@ namespace Infrastructure.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.HasIndex("WarehouseId");
+                    b.HasIndex("WarehouseId")
+                        .IsUnique();
 
                     b.ToTable("UserWarehouseTable");
                 });
@@ -240,8 +243,8 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("Domain.Warehouse", "Warehouse")
-                        .WithMany("UserInWarehouse")
-                        .HasForeignKey("WarehouseId")
+                        .WithOne("Uiw")
+                        .HasForeignKey("Domain.UserInWarehouse", "WarehouseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -285,7 +288,8 @@ namespace Infrastructure.Migrations
                 {
                     b.Navigation("Products");
 
-                    b.Navigation("UserInWarehouse");
+                    b.Navigation("Uiw")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

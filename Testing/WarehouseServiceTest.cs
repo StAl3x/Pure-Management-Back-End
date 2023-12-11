@@ -36,8 +36,9 @@ public class WarehouseServiceTest
         var putProductValidator = new PutProductValidator();
         var postWarehouseValidator = new PostWarehouseValidator();
         var putWarehouseValidator = new PutWarehouseValidator();
-        IWarehouseService warehouseService = new WarehouseService(moqRepository.Object, postWarehouseValidator, putWarehouseValidator, postProductValidator, putProductValidator, postPinValidator, putPinValidator, mapper);
-
+        var postUIWValidator = new PostUserInWarehouseValidator();
+        var putUIWValidator = new PutUserInWarehouseValidator();
+        IWarehouseService warehouseService = new WarehouseService(moqRepository.Object, postWarehouseValidator, putWarehouseValidator, postProductValidator, putProductValidator, postPinValidator, putPinValidator, postUIWValidator, putUIWValidator, mapper);
 
         Warehouse response = warehouseService.GetById(moqId);
         
@@ -66,8 +67,9 @@ public class WarehouseServiceTest
         var putProductValidator = new PutProductValidator();
         var postWarehouseValidator = new PostWarehouseValidator();
         var putWarehouseValidator = new PutWarehouseValidator();
-        IWarehouseService warehouseService = new WarehouseService(moqRepository.Object, postWarehouseValidator, putWarehouseValidator, postProductValidator, putProductValidator, postPinValidator, putPinValidator, mapper);
-
+        var postUIWValidator = new PostUserInWarehouseValidator();
+        var putUIWValidator = new PutUserInWarehouseValidator();
+        IWarehouseService warehouseService = new WarehouseService(moqRepository.Object, postWarehouseValidator, putWarehouseValidator, postProductValidator, putProductValidator, postPinValidator, putPinValidator, postUIWValidator, putUIWValidator, mapper);
 
         List<Warehouse> response = warehouseService.GetAll();
 
@@ -104,8 +106,9 @@ public class WarehouseServiceTest
         var putProductValidator = new PutProductValidator();
         var postWarehouseValidator = new PostWarehouseValidator();
         var putWarehouseValidator = new PutWarehouseValidator();
-        IWarehouseService warehouseService = new WarehouseService(moqRepository.Object, postWarehouseValidator, putWarehouseValidator, postProductValidator, putProductValidator, postPinValidator, putPinValidator, mapper);
-
+        var postUIWValidator = new PostUserInWarehouseValidator();
+        var putUIWValidator = new PutUserInWarehouseValidator();
+        IWarehouseService warehouseService = new WarehouseService(moqRepository.Object, postWarehouseValidator, putWarehouseValidator, postProductValidator, putProductValidator, postPinValidator, putPinValidator, postUIWValidator, putUIWValidator, mapper);
 
         Warehouse response = warehouseService.Delete(moqId);
 
@@ -141,8 +144,9 @@ public class WarehouseServiceTest
         var putProductValidator = new PutProductValidator();
         var postWarehouseValidator = new PostWarehouseValidator();
         var putWarehouseValidator = new PutWarehouseValidator();
-        IWarehouseService warehouseService = new WarehouseService(moqRepository.Object, postWarehouseValidator, putWarehouseValidator, postProductValidator, putProductValidator, postPinValidator, putPinValidator, mapper);
-
+        var postUIWValidator = new PostUserInWarehouseValidator();
+        var putUIWValidator = new PutUserInWarehouseValidator();
+        IWarehouseService warehouseService = new WarehouseService(moqRepository.Object, postWarehouseValidator, putWarehouseValidator, postProductValidator, putProductValidator, postPinValidator, putPinValidator, postUIWValidator, putUIWValidator, mapper);
 
         Warehouse response = warehouseService.Update(moqId, putDto);
 
@@ -194,7 +198,9 @@ public class WarehouseServiceTest
         var putProductValidator = new PutProductValidator();
         var postWarehouseValidator = new PostWarehouseValidator();
         var putWarehouseValidator = new PutWarehouseValidator();
-        IWarehouseService warehouseService = new WarehouseService(moqWarehouseRepository.Object,postWarehouseValidator, putWarehouseValidator, postProductValidator, putProductValidator, postPinValidator, putPinValidator, mapper);
+        var postUIWValidator = new PostUserInWarehouseValidator();
+        var putUIWValidator = new PutUserInWarehouseValidator();
+        IWarehouseService warehouseService = new WarehouseService(moqWarehouseRepository.Object,postWarehouseValidator, putWarehouseValidator, postProductValidator, putProductValidator, postPinValidator, putPinValidator, postUIWValidator, putUIWValidator, mapper);
 
         List<Product> response = warehouseService.GetProducts(warehouse.Id);
 

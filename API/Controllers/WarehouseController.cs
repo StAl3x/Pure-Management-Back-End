@@ -223,4 +223,81 @@ public class WarehouseController : ControllerBase
         }
     }
 
+    [HttpGet]
+    [Route("user/{id}")]
+    public ActionResult<List<User>> GetUsers([FromRoute] int id) 
+    {
+        try
+        {
+            return Ok(_warehouseService.GetUsers(id));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.ToString());
+        }
+    }
+
+    [HttpPost]
+    [Route("userAdd/")]
+    public ActionResult<User> AddUser([FromBody] PostUserInWarehouseDTO uiwDTO)
+    {
+        try
+        {
+            var result = _warehouseService.AddUser(uiwDTO);
+            return Ok(result);
+        }
+        catch (ValidationException ex)
+        {
+            return BadRequest(ex.ToString());
+        }
+        catch (ArgumentException ex)
+        {
+            return StatusCode(403, ex.ToString());
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.ToString());
+        }
+    }
+
+    [HttpDelete]
+    [Route("user/{id}")]
+    public ActionResult<Product> RemoveUser([FromRoute] int id)
+    {
+        try
+        {
+            return Ok(_warehouseService.RemoveUser(id));
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.ToString());
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.ToString());
+        }
+    }
+
+    [HttpPut]
+    [Route("user/")]
+    public ActionResult<Product> UpdateUserAccessLevel([FromBody] PutUserInWarehouseDTO uiwDTO)
+    {
+        try
+        {
+            var resutl = _warehouseService.UpdateUserAccessLevel(uiwDTO);
+            return Ok(resutl);
+        }
+        catch (ValidationException ex)
+        {
+            return BadRequest(ex.ToString());
+        }
+        catch (ArgumentException ex)
+        {
+            return StatusCode(403, ex.ToString());
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.ToString());
+        }
+    }
 }

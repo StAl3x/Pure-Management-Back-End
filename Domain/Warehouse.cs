@@ -15,5 +15,6 @@ namespace Domain
         public int CompanyId { get; set; }
         public virtual Company Company { get; set; }
         public virtual ICollection<ProductInWarehouse> Products { get; set; }
+        public virtual ICollection<UserInWarehouse> UserInWarehouse { get; set; }
     }
 }
