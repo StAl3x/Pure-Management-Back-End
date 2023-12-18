@@ -13,9 +13,9 @@ public interface IWarehouseService
     public Warehouse Delete(int id);
 
     public List<Product> GetProducts(int warehouseId);
-    public Product CreateProduct(PostProductInWarehouseDTO pin, PostProductDTO productDTO);
-    public Product UpdateProduct(PutProductInWarehouseDTO pin, PutProductDTO productDTO);
-    public Product DeleteProduct(int id, bool deleteFromProductTable);
+    public Product CreateProduct(int warehouseId,PostProductDTOWithQuantity productDTO);
+    public Product UpdateProduct(int warehouseId, PutProductDTOWithQuantity productDTO);
+    public Product DeleteProduct(int warehouseId, int productId, bool deleteFromProductTable);
     public Product AddProduct(PostProductInWarehouseDTO pinDTO);
 
     public List<User> GetUsers(int warehouseId);

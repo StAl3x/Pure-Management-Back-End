@@ -18,9 +18,9 @@ namespace Application.Interfaces
 
         //Product in warehouse manipulation
         public List<Product> GetProducts(int warehouseId);
-        public Product CreateProduct(ProductInWarehouse pin, Product product);
-        public Product UpdateProduct(ProductInWarehouse pin, Product product);
-        public Product DeleteProduct(int id, bool deleteFromProductTable);
+        public Product CreateProduct(int warehouseId, Product product);
+        public Product UpdateProduct(int warehouseId, Product product);
+        public Product DeleteProduct(int warehouseId, int productId, bool deleteFromProductTable);
         public Product AddProduct(ProductInWarehouse pin);
 
         // User in warehouse manipulation

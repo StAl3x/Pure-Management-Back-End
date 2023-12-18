@@ -132,15 +132,12 @@ public class WarehouseController : ControllerBase
     }
 
     [HttpPost]
-    [Route("product/")]
-    public ActionResult<Product> CreateProduct([FromBody] PostProductModel model) 
+    [Route("product/{warehouseId}")]
+    public ActionResult<Product> CreateProduct([FromRoute] int warehouseId, [FromBody] PostProductDTOWithQuantity productDTO) 
     {
-        var pinDTO = model.PinDTO;
-        var productDTO = model.ProductDTO;
-
         try
         {
-            var result = _warehouseService.CreateProduct(pinDTO, productDTO);
+            var result = _warehouseService.CreateProduct(warehouseId, productDTO);
             return Ok(result);
         }
         catch (ValidationException ex)
@@ -158,15 +155,12 @@ public class WarehouseController : ControllerBase
     }
 
     [HttpPut]
-    [Route("product/")]
-    public ActionResult<Product> UpdateProduct([FromBody] PutProductModel model) 
+    [Route("productQuantity/{warehouseId}")]
+    public ActionResult<Product> UpdateProductQuantity([FromRoute] int warehouseId, PutProductDTOWithQuantity productWithQuantityDTO) 
     {
-        var pinDTO = model.PinDTO;
-        var productDTO = model.ProductDTO;
         try
         {
-            var resutl = _warehouseService.UpdateProduct(pinDTO, productDTO);
-            return Ok(resutl);
+            return Ok(_warehouseService.UpdateProduct(warehouseId, productWithQuantityDTO));
         }
         catch (ValidationException ex)
         {
@@ -183,12 +177,14 @@ public class WarehouseController : ControllerBase
     }
 
     [HttpDelete]
-    [Route("product/{id}")]
-    public ActionResult<Product> DeleteProduct([FromRoute] int id, [FromBody] bool deleteFromProductTable)
+    [Route("product/{warehouseId}")]
+    public ActionResult<Product> DeleteProduct([FromRoute] int warehouseId, [FromBody] DeleteProductFromWarehouseModel model)
     {
+        int productId = model.productId;
+        bool deleteFromProductTable = model.deleteFromProductTable;
         try
         {
-            return Ok(_warehouseService.DeleteProduct(id, deleteFromProductTable));
+            return Ok(_warehouseService.DeleteProduct(warehouseId, productId, deleteFromProductTable));
         }
         catch (KeyNotFoundException ex)
         {

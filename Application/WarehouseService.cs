@@ -20,6 +20,8 @@ namespace Application
         private readonly IValidator<PutProductInWarehouseDTO> _putPINValidator;
         private readonly IValidator<PostUserInWarehouseDTO> _postUIWValidator;
         private readonly IValidator<PutUserInWarehouseDTO> _putUIWValidator;
+        private readonly IValidator<PostProductDTOWithQuantity> _postProductWithQuantityValidator;
+        private readonly IValidator<PutProductDTOWithQuantity> _putProductWithQuantityValidator;
         private readonly IMapper _mapper;
 
         public WarehouseService(
@@ -32,6 +34,8 @@ namespace Application
         IValidator<PutProductInWarehouseDTO> putPINValidator,
         IValidator<PostUserInWarehouseDTO> postUIWValidator,
         IValidator<PutUserInWarehouseDTO> putUIWValidator,
+        IValidator<PostProductDTOWithQuantity> postProductWithQuantityValidator,
+        IValidator<PutProductDTOWithQuantity> putProductWithQuantityValidator,
         IMapper mapper)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -43,6 +47,10 @@ namespace Application
             _putPINValidator = putPINValidator ?? throw new ArgumentNullException(nameof(_putPINValidator));
             _postUIWValidator = postUIWValidator ?? throw new ArgumentNullException(nameof(_postUIWValidator));
             _putUIWValidator = putUIWValidator ?? throw new ArgumentNullException(nameof(_putUIWValidator));
+            _postProductWithQuantityValidator = postProductWithQuantityValidator ?? throw new ArgumentNullException(nameof(_postProductWithQuantityValidator));
+            _putProductWithQuantityValidator = putProductWithQuantityValidator ?? throw new ArgumentNullException(nameof(_putProductWithQuantityValidator));
+
+
             _warehouseRepository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
@@ -83,31 +91,27 @@ namespace Application
             return _warehouseRepository.GetProducts(warehouseId);
         }
 
-        public Product CreateProduct(PostProductInWarehouseDTO pinDTO, PostProductDTO productDTO)
+        public Product CreateProduct(int warehouseId, PostProductDTOWithQuantity productDTO)
         {
-            var pinValidation = _postPINValidator.Validate(pinDTO);
-            var productValidation = _postProductValidator.Validate(productDTO);
-            if(!pinValidation.IsValid)
-                throw new ValidationException(pinValidation.ToString());
+            
+            var productValidation = _postProductWithQuantityValidator.Validate(productDTO);
             if (!productValidation.IsValid)
                 throw new ValidationException(productValidation.ToString());
-            return _warehouseRepository.CreateProduct(_mapper.Map<ProductInWarehouse>(pinDTO), _mapper.Map<Product>(productDTO));
+            return _warehouseRepository.CreateProduct(warehouseId, _mapper.Map<Product>(productDTO));
         }
 
-        public Product UpdateProduct(PutProductInWarehouseDTO pinDTO, PutProductDTO productDTO)
+        public Product UpdateProduct(int warehouseId, PutProductDTOWithQuantity productDTO)
         {
-            var pinValidation = _putPINValidator.Validate(pinDTO);
-            var productValidation = _putProductValidator.Validate(productDTO);
-            if (!pinValidation.IsValid)
-                throw new ValidationException(pinValidation.ToString());
+            
+            var productValidation = _putProductWithQuantityValidator.Validate(productDTO);
             if (!productValidation.IsValid)
                 throw new ValidationException(productValidation.ToString());
-            return _warehouseRepository.UpdateProduct(_mapper.Map<ProductInWarehouse>(pinDTO), _mapper.Map<Product>(productDTO));
+            return _warehouseRepository.UpdateProduct(warehouseId, _mapper.Map<Product>(productDTO));
         }
 
-        public Product DeleteProduct(int id, bool deleteFromProductTable)
+        public Product DeleteProduct(int warehouseId, int productId, bool deleteFromProductTable)
         {
-            return _warehouseRepository.DeleteProduct(id, deleteFromProductTable);
+            return _warehouseRepository.DeleteProduct(warehouseId, productId, deleteFromProductTable);
         }
 
         public Product AddProduct(PostProductInWarehouseDTO pinDTO)
