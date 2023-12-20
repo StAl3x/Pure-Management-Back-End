@@ -411,3 +411,6 @@ bin/Debug/net6.0/appsettings.json
 =======
 /API/appsetting.Development.json
 >>>>>>> Stashed changes
+/API/appsetting.Development.json
+/API/appsettings.json
+/API/Properties/launchSettings.json
