@@ -117,10 +117,10 @@ namespace Infrastructure
             
         }
 
-        public User RemoveUser(int userId)
+        public User RemoveUser(int warehouseId, int userId)
         {
             User user = _context.UserTable.Find(userId) ?? throw new KeyNotFoundException();
-            UserInWarehouse uiwToDelete = (UserInWarehouse) _context.UserWarehouseTable.Where(uiw => uiw.UserId == userId).First();
+            UserInWarehouse uiwToDelete = (UserInWarehouse) _context.UserWarehouseTable.Where(uiw => uiw.UserId == userId && uiw.WarehouseId == warehouseId).First();
             _context.UserWarehouseTable.Remove(uiwToDelete);
             _context.SaveChanges();
             return user;

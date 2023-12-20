@@ -1,10 +1,7 @@
 ﻿using Application.Interfaces;
 using Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BCrypt.Net;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace Infrastructure;
 
@@ -28,6 +25,8 @@ public class UserRepository : IUserRepository
     }
     public User Create(User user)
     {
+        string salt = BCrypt.Net.BCrypt.GenerateSalt();
+        user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password, salt);
         _context.UserTable.Add(user);
         _context.SaveChanges();
         return user;
@@ -48,5 +47,10 @@ public class UserRepository : IUserRepository
         return userToDelete;
     }
 
-
+    public bool VerifyUserPassword(string userName, string password)
+    {
+        Console.WriteLine(userName);
+        User user = _context.UserTable.Where(u => u.Name.Equals(userName.ToString())).FirstOrDefault() ?? throw new KeyNotFoundException();
+        return BCrypt.Net.BCrypt.Verify(password, user.Password);
+    }
 }

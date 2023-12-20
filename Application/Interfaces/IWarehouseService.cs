@@ -20,6 +20,6 @@ public interface IWarehouseService
 
     public List<User> GetUsers(int warehouseId);
     public User AddUser(PostUserInWarehouseDTO uiwDTO);
-    public User RemoveUser(int userId);
+    public User RemoveUser(int warehouseId, int userId);
     public User UpdateUserAccessLevel(PutUserInWarehouseDTO uiwDTO);
 }

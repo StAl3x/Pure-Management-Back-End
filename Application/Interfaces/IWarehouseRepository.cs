@@ -27,7 +27,7 @@ namespace Application.Interfaces
 
         public List<User> GetUsers(int warehouseId);
         public User AddUser (UserInWarehouse uiw);
-        public User RemoveUser (int userId);
+        public User RemoveUser (int warehouseId, int userId);
         public User UpdateUserAccesLevel(UserInWarehouse uiw);
     }
 }

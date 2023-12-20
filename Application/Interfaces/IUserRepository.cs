@@ -14,4 +14,5 @@ public interface IUserRepository
     public User GetById(int id);
     public User Update(User user);
     public User Delete(int id);
+    public bool VerifyUserPassword(string UserName, string password);
 }

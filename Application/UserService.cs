@@ -64,4 +64,8 @@ public class UserService : IUserService
         return _repository.Delete(id);
     }
 
+    public bool VerifyUserPassword(string UserName, string password)
+    {
+        return _repository.VerifyUserPassword(UserName, password);
+    }
 }

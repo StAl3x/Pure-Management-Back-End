@@ -261,12 +261,12 @@ public class WarehouseController : ControllerBase
     }
 
     [HttpDelete]
-    [Route("user/{id}")]
-    public ActionResult<Product> RemoveUser([FromRoute] int id)
+    [Route("user/{warehouseId}")]
+    public ActionResult<Product> RemoveUser([FromRoute] int warehouseId, [FromBody] int userId)
     {
         try
         {
-            return Ok(_warehouseService.RemoveUser(id));
+            return Ok(_warehouseService.RemoveUser(warehouseId, userId));
         }
         catch (KeyNotFoundException ex)
         {

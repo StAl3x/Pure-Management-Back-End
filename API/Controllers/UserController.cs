@@ -108,4 +108,18 @@ public class UserController : ControllerBase
             return StatusCode(500, ex.ToString());
         }
     }
+
+    [HttpPost]
+    [Route("{userName}")]
+    public ActionResult<bool> VerifyPassword([FromRoute] string userName, [FromBody] string password)
+    {
+        try
+        {
+            return Ok(_userService.VerifyUserPassword(userName, password));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.ToString());
+        }
+    }
 }

@@ -131,9 +131,9 @@ namespace Application
             return _warehouseRepository.AddUser(_mapper.Map<UserInWarehouse>(uiwDTO));
         }
 
-        public User RemoveUser(int userId)
+        public User RemoveUser(int warehouseId, int userId)
         {
-            return _warehouseRepository.RemoveUser(userId);
+            return _warehouseRepository.RemoveUser(warehouseId, userId);
         }
 
         public User UpdateUserAccessLevel(PutUserInWarehouseDTO uiwDTO)

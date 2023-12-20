@@ -15,4 +15,6 @@ public interface IUserService
     public User GetById(int id);
     public User Update(int id, PutUserDTO dto);
     public User Delete(int id);
+
+    public bool VerifyUserPassword(string UserName, string password);
 }
