@@ -58,29 +58,30 @@ namespace Infrastructure
             return products;
 
         }
-        public Product CreateProduct(ProductInWarehouse pin, Product product)
+        public Product CreateProduct(int warehouseId,Product product)
         {
-            _context.ProductWarehouseTable.Add(pin);
+            
             _context.ProductTable.Add(product);
             _context.SaveChanges();
-            Product result = new Product() { Name = product.Name, Unit = product.Unit, PricePerUnit = product.PricePerUnit, CompanyId = product.CompanyId, Quantity = pin.Quantity};
-            return result;
-        }
-
-        public Product UpdateProduct(ProductInWarehouse pin, Product product)
-        {
-            _context.ProductWarehouseTable.Update(pin);
-            _context.ProductTable.Update(product);
+            int productId  = _context.ProductTable.Where(p => p.Name == product.Name && p.CompanyId == product.CompanyId).Select(p => p.Id).FirstOrDefault();
+            _context.ProductWarehouseTable.Add(new ProductInWarehouse {ProductId = productId,WarehouseId= warehouseId,Quantity = product.Quantity });
             _context.SaveChanges();
-            Product result = new Product() { Name = product.Name, Unit = product.Unit, PricePerUnit = product.PricePerUnit, CompanyId = product.CompanyId, Quantity = pin.Quantity };
-            return result;
+            return _context.ProductTable.Find(productId) ?? throw new KeyNotFoundException();
         }
 
-        public Product DeleteProduct(int id, bool deleteFromProductTable)
+        public Product UpdateProduct(int warehouseId, Product product)
         {
-            ProductInWarehouse pin = (ProductInWarehouse)_context.ProductWarehouseTable.Where(p => p.ProductId == id);
+            
+            _context.ProductWarehouseTable.Update(new ProductInWarehouse { ProductId = product.Id, WarehouseId = warehouseId, Quantity = product.Quantity });
+            _context.SaveChanges();
+            return _context.ProductTable.Find(product.Id) ?? throw new KeyNotFoundException();
+        }
+
+        public Product DeleteProduct(int warehouseId, int productId, bool deleteFromProductTable)
+        {
+            ProductInWarehouse pin = _context.ProductWarehouseTable.Where(p => p.ProductId == productId && p.WarehouseId == warehouseId).FirstOrDefault() ?? throw new KeyNotFoundException();
             _context.ProductWarehouseTable.Remove(pin);
-            Product productToDelete = _context.ProductTable.Find(id) ?? throw new KeyNotFoundException();
+            Product productToDelete = _context.ProductTable.Find(productId) ?? throw new KeyNotFoundException();
             if (deleteFromProductTable)
             {
                 _context.ProductTable.Remove(productToDelete);
