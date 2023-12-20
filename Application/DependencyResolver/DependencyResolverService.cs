@@ -10,5 +10,7 @@ public static class DependencyResolverService
     {
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IWarehouseService, WarehouseService>();
+        services.AddScoped<ICompanyService, CompanyService>();
+        services.AddScoped<IUserService, UserService>();
     }
 }

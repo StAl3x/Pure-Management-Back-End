@@ -5,10 +5,10 @@ namespace Infrastructure;
 
 public class AppDbContext : DbContext
 {
-    
 
+  
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {
-    
+        
     }
     //For testing only 
     public AppDbContext() { }
@@ -18,21 +18,83 @@ public class AppDbContext : DbContext
     {
         optionsBuilder.UseNpgsql(ConnStr.Get());
     }
+    public DbSet<Product> ProductTable { get; set; }
+    public DbSet<Warehouse> WarehouseTable { get; set; }
+    public DbSet<User> UserTable { get; set; }
+    public DbSet<Company> CompanyTable { get; set; }
+    public DbSet<ProductInWarehouse> ProductWarehouseTable { get; set; }
+
+    public DbSet<UserInWarehouse> UserWarehouseTable { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        
+
+    modelBuilder.Entity<Company>()
+            .Property(c => c.Id)
+            .ValueGeneratedOnAdd();
         modelBuilder.Entity<Product>()
             .Property(p => p.Id)
             .ValueGeneratedOnAdd();
+        modelBuilder.Entity<Product>()
+            .HasOne(p => p.Company)
+            .WithMany(c => c.Products)
+            .HasForeignKey(p => p.CompanyId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Warehouse>()
+            .Property(w => w.Id)
+            .ValueGeneratedOnAdd();
+        modelBuilder.Entity<Warehouse>()
+            .HasOne(w => w.Company)
+            .WithMany(c => c.Warehouses)
+            .HasForeignKey(w => w.CompanyId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<User>()
+            .Property(u => u.Id)
+            .ValueGeneratedOnAdd();
+        modelBuilder.Entity<User>()
+            .HasOne(u => u.Company)
+            .WithMany(c => c.Users)
+            .HasForeignKey(u => u.CompanyId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ProductInWarehouse>()
+            .Property(p => p.Id)
+            .ValueGeneratedOnAdd();
+        modelBuilder.Entity<ProductInWarehouse>()
+            .HasOne(pW => pW.Product)
+            .WithMany(p => p.Products)
+            .HasForeignKey(pW => pW.ProductId);
+        modelBuilder.Entity<ProductInWarehouse>()
+            .HasOne(pw => pw.Warehouse)
+            .WithMany(w => w.Products)
+            .HasForeignKey(pw => pw.WarehouseId);
+
+        modelBuilder.Entity<UserInWarehouse>()
+            .Property(uiw => uiw.Id)
+            .ValueGeneratedOnAdd();
+        modelBuilder.Entity<UserInWarehouse>()
+            .HasOne(uiw => uiw.User)
+            .WithOne(u => u.UserInWarehouse)
+            .HasForeignKey<UserInWarehouse>(uiw => uiw.UserId);
+        modelBuilder.Entity<UserInWarehouse>()
+            .HasOne(uiw => uiw.Warehouse)
+            .WithMany(w => w.UserInWarehouse)
+            .HasForeignKey(uiw => uiw.WarehouseId);
+
     }
 
     public class ConnStr
     {
         public static string Get()
         {
-            String url = Environment.GetEnvironmentVariable("ConnectionString");
-
-            var uriString = url;
+            var uriString = Environment.GetEnvironmentVariable("ConnectionString") ?? throw new ArgumentNullException("Connection String : is null");
             var uri = new Uri(uriString);
             var db = uri.AbsolutePath.Trim('/');
             var user = uri.UserInfo.Split(':')[0];
@@ -44,6 +106,5 @@ public class AppDbContext : DbContext
         }
     }
     
-        public DbSet<Product> ProductTable { get; set; }
-        public DbSet<Warehouse> WarehouseTable { get; set; }
+        
     }

@@ -17,16 +17,16 @@ public class ProductRepository : IProductRepository
         return _context.ProductTable.ToList();
     }
 
+    public Product GetProductById(int id)
+    {
+        return _context.ProductTable.Find(id) ?? throw new KeyNotFoundException();
+    }
+
     public Product CreateNewProduct(Product product)
     {
         _context.ProductTable.Add(product);
         _context.SaveChanges();
         return product;
-    }
-
-    public Product GetProductById(int id)
-    {
-        return _context.ProductTable.Find(id) ?? throw new KeyNotFoundException();
     }
 
     public Product UpdateProduct(Product product)

@@ -21,9 +21,14 @@ public class ProductServiceTest
     {
         var moqRepository = new Mock <IProductRepository>();
         int moqId = 1;
-        Product testProduct = new()
+        Product testProduct = new Product()
         {
-            Id = moqId
+            Id = moqId,
+            Name = "Test",
+            PricePerUnit = 10,
+            Unit = "Unit",
+            CompanyId = 1,
+
         };
         moqRepository.Setup(r => r.GetProductById(moqId)).Returns(testProduct);
 
@@ -46,7 +51,7 @@ public class ProductServiceTest
         var moqRepository = new Mock<IProductRepository>();
         List<Product> moqProducts = new()
         {
-            new Product { Id = 24 },
+            new Product { Id = 24, Name = "ProductOne", PricePerUnit = 12.3, Unit = "Piece" },
             new Product { Id = 46 },
         };
         moqRepository.Setup(r => r.GetAllProducts()).Returns(moqProducts);

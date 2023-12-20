@@ -406,3 +406,11 @@ appsettings.Development.json
 PureManagementData/pure-management-firebase-adminsdk-cffgi-3e3f8e929f.json
 bin/Debug/net6.0/appsettings.json
 /API/Properties/launchSettings.json
+<<<<<<< Updated upstream
+/Infrastructure/launchSettings.json
+=======
+/API/appsetting.Development.json
+>>>>>>> Stashed changes
+/API/appsetting.Development.json
+/API/appsettings.json
+/API/Properties/launchSettings.json

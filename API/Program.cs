@@ -5,6 +5,8 @@ using Domain;
 using FluentValidation;
 using Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.InteropServices;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +20,11 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+});
+
 
 var mapper = new MapperConfiguration(configuration =>
 {
@@ -25,6 +32,17 @@ var mapper = new MapperConfiguration(configuration =>
     configuration.CreateMap<PutProductDTO, Product>();
     configuration.CreateMap<PostWarehouseDTO, Warehouse>();
     configuration.CreateMap<PutWarehouseDTO, Warehouse>();
+    configuration.CreateMap<PostCompanyDTO, Company>();
+    configuration.CreateMap<PutCompanyDTO, Company>();
+    configuration.CreateMap<PostUserDTO, User>();
+    configuration.CreateMap<PutUserDTO, User>();
+    configuration.CreateMap<PostProductInWarehouseDTO, ProductInWarehouse>();
+    configuration.CreateMap<PutProductInWarehouseDTO, ProductInWarehouse>();
+    configuration.CreateMap<PostUserInWarehouseDTO, UserInWarehouse>();
+    configuration.CreateMap<PutUserInWarehouseDTO, UserInWarehouse>();
+    configuration.CreateMap<PostProductDTOWithQuantity, Product>();
+    configuration.CreateMap<PutProductDTOWithQuantity, Product>();
+
 }).CreateMapper();
 builder.Services.AddSingleton(mapper);
 
