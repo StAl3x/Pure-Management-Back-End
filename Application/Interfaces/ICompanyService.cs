@@ -1,5 +1,6 @@
-﻿using Application.DTOs;
-using Domain;
+﻿using Domain;
+using Domain.DTOs;
+using Domain.Models;
 
 
 namespace Application.Interfaces
@@ -9,10 +10,10 @@ namespace Application.Interfaces
         public List<Company> GetAll();
         public Company Create(PostCompanyDTO dto);
         public Company GetById(int id);
-        public Company Update(int id, PutCompanyDTO dto);
-        public Company Delete(int id);
-        public List<Warehouse> GetWarehouses(int companyId);
-        public List<Product> GetProducts(int companyId);
-        public List<User> GetUsers(int companyId);
+        public Company Update(int id, CompanyModel companyModel);
+        public Company Delete(int id, int userId);
+        public List<Warehouse> GetWarehouses(int companyId, int userId);
+        public List<Product> GetProducts(int companyId, int userId);
+        public List<User> GetUsers(int companyId, int userId);
     }
 }

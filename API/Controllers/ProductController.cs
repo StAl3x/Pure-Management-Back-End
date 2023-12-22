@@ -1,8 +1,9 @@
-using Application.DTOs;
+using Domain.DTOs;
 using Domain;
 using Domain.Interfaces;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using Domain.Models;
 
 namespace API.Controllers;
 
@@ -33,7 +34,7 @@ public class ProductController : ControllerBase
 
     [HttpGet]
     [Route("{id}")] //localhost:5001/product/42
-    public ActionResult<Product> GetProductById(int id)
+    public ActionResult<Product> GetProductById([FromRoute]int id)
     {
         try
         {
@@ -51,11 +52,11 @@ public class ProductController : ControllerBase
 
     [HttpPost]
     [Route("")]
-    public ActionResult<Product> CreateNewProduct(PostProductDTO dto)
+    public ActionResult<Product> CreateNewProduct(ProductModel model)
     {
         try
         {
-            var product = _productService.CreateNewProduct(dto);
+            var product = _productService.CreateNewProduct(model);
             return Ok(Created($"product/{product.Id}", product));
         }
         catch (ValidationException ex)
@@ -75,11 +76,11 @@ public class ProductController : ControllerBase
 
     [HttpPut]
     [Route("{id}")] //localhost:5001/product/8732648732
-    public ActionResult<Product> UpdateProduct([FromRoute] int id, [FromBody] PutProductDTO product)
+    public ActionResult<Product> UpdateProduct([FromRoute] int id, [FromBody] ProductModel model)
     {
         try
         {
-            var result = _productService.UpdateProduct(id, product);
+            var result = _productService.UpdateProduct(id, model);
             return Ok(result);
         }
         catch (KeyNotFoundException ex)
@@ -99,11 +100,11 @@ public class ProductController : ControllerBase
 
     [HttpDelete]
     [Route("{id}")]
-    public ActionResult<Product> DeleteProduct(int id)
+    public ActionResult<Product> DeleteProduct([FromRoute]int id , [FromBody] int userId)
     {
         try
         {
-            return Ok(_productService.DeleteProduct(id));
+            return Ok(_productService.DeleteProduct(id, userId));
         }
         catch (KeyNotFoundException ex)
         {

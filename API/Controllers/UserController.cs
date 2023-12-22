@@ -1,8 +1,9 @@
-﻿using Application.DTOs;
+﻿using Domain.DTOs;
 using Application.Interfaces;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using Domain.Models;
 
 namespace API.Controllers;
 
@@ -17,12 +18,12 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    [Route("")]
-    public ActionResult<List<User>> GetAll()
+    [Route("{userId}")]
+    public ActionResult<List<User>> GetAll([FromRoute] int userId)
     {
         try
         {
-            return Ok(_userService.GetAll());
+            return Ok(_userService.GetAll(userId));
         }
         catch (Exception ex)
         {
@@ -46,11 +47,11 @@ public class UserController : ControllerBase
 
     [HttpPost]
     [Route("")]
-    public ActionResult<User> Create(PostUserDTO dto)
+    public ActionResult<User> Create(UserModel model)
     {
         try
         {
-            var user = _userService.Create(dto);
+            var user = _userService.Create(model);
             return Ok(Created($"user/{user.Id}", user));
         }
         catch (ValidationException ex)
@@ -69,11 +70,11 @@ public class UserController : ControllerBase
 
     [HttpPut]
     [Route("{id}")]
-    public ActionResult<User> Update([FromRoute] int id, [FromBody] PutUserDTO dto)
+    public ActionResult<User> Update([FromRoute] int id, [FromBody] UserModel model)
     {
         try
         {
-            var result = _userService.Update(id, dto);
+            var result = _userService.Update(id, model);
             return Ok(result);
         }
 
@@ -93,11 +94,11 @@ public class UserController : ControllerBase
 
     [HttpDelete]
     [Route("{id}")]
-    public ActionResult<User> Delete([FromRoute] int id)
+    public ActionResult<User> Delete([FromRoute] int id, [FromBody] int userId)
     {
         try
         {
-            return Ok(_userService.Delete(id));
+            return Ok(_userService.Delete(id, userId));
         }
         catch (KeyNotFoundException ex)
         {

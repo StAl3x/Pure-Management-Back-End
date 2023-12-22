@@ -14,8 +14,13 @@ public class UserRepository : IUserRepository
         _context = context ?? throw new AggregateException(nameof(context));
     }
 
-    public List<User> GetAll()
+    public List<User> GetAll(int userId)
     {
+        UserInWarehouse uiw = _context.UserWarehouseTable.Where(u => u.UserId == userId).First() ?? throw new KeyNotFoundException();
+        if (uiw.AccessLevel != 4)
+        {
+            throw new Exception("Access denied");
+        }
         return _context.UserTable.ToList();
     }
 
@@ -23,8 +28,13 @@ public class UserRepository : IUserRepository
     {
         return _context.UserTable.Find(id) ?? throw new KeyNotFoundException();
     }
-    public User Create(User user)
+    public User Create(User user, int userId)
     {
+        UserInWarehouse uiw = _context.UserWarehouseTable.Where(u => u.UserId == userId).First() ?? throw new KeyNotFoundException();
+        if (uiw.AccessLevel != 4)
+        {
+            throw new Exception("Access denied");
+        }
         string salt = BCrypt.Net.BCrypt.GenerateSalt();
         user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password, salt);
         _context.UserTable.Add(user);
@@ -32,15 +42,25 @@ public class UserRepository : IUserRepository
         return user;
     }
 
-    public User Update(User user)
+    public User Update(User user, int userId)
     {
+        UserInWarehouse uiw = _context.UserWarehouseTable.Where(u => u.UserId == userId).First() ?? throw new KeyNotFoundException();
+        if (uiw.AccessLevel != 4)
+        {
+            throw new Exception("Access denied");
+        }
         _context.UserTable.Update(user);
         _context.SaveChanges();
         return user;
     }
 
-    public User Delete(int id)
+    public User Delete(int id, int userId)
     {
+        UserInWarehouse uiw = _context.UserWarehouseTable.Where(u => u.UserId == userId).First() ?? throw new KeyNotFoundException();
+        if (uiw.AccessLevel != 4)
+        {
+            throw new Exception("Access denied");
+        }
         User userToDelete = _context.UserTable.Find(id) ?? throw new KeyNotFoundException();
         _context.UserTable.Remove(userToDelete);
         _context.SaveChanges();
@@ -49,7 +69,6 @@ public class UserRepository : IUserRepository
 
     public bool VerifyUserPassword(string userName, string password)
     {
-        Console.WriteLine(userName);
         User user = _context.UserTable.Where(u => u.Name.Equals(userName.ToString())).FirstOrDefault() ?? throw new KeyNotFoundException();
         return BCrypt.Net.BCrypt.Verify(password, user.Password);
     }

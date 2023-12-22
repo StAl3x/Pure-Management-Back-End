@@ -1,10 +1,11 @@
-﻿using Application.DTOs;
+﻿using Domain.DTOs;
 using Application.Interfaces;
 using AutoMapper;
 using Domain;
 using Domain.Interfaces;
 using FluentValidation;
 using ValidationException = FluentValidation.ValidationException;
+using Domain.Models;
 
 
 namespace Application
@@ -54,36 +55,40 @@ namespace Application
             _warehouseRepository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
-        public Warehouse Create(PostWarehouseDTO dto)
+        public Warehouse Create(WarehouseModel model)
         {
+            PostWarehouseDTO dto = model.postWarehouseDTO ?? throw new NullReferenceException();
+            int userId = model.userId;
             var validation = _postWarehouseValidator.Validate(dto);
             if (!validation.IsValid)
                 throw new ValidationException(validation.ToString());
-            return _warehouseRepository.Create(_mapper.Map<Warehouse>(dto));
+            return _warehouseRepository.Create(_mapper.Map<Warehouse>(dto), userId);
         }
 
-        public Warehouse Delete(int id)
+        public Warehouse Delete(int id, int userId)
         {
-            return _warehouseRepository.Delete(id);
+            return _warehouseRepository.Delete(id, userId);
         }
 
-        public List<Warehouse> GetAll()
+        public List<Warehouse> GetAll(int userId)
         {
-            return _warehouseRepository.GetAll();
+            return _warehouseRepository.GetAll(userId);
         }
 
         public Warehouse GetById(int id)
         {
             return _warehouseRepository.GetById(id);
         }
-        public Warehouse Update(int id, PutWarehouseDTO dto)
+        public Warehouse Update(int id, WarehouseModel model)
         {
+            PutWarehouseDTO dto = model.putWarehouseDTO ?? throw new NullReferenceException();
+            int userId = model.userId;
             var validation = _putWarehouseValidator.Validate(dto);
             if(!validation.IsValid)
                 throw new ValidationException(validation.ToString());
             Warehouse warehouse = _mapper.Map<Warehouse>(dto);
             warehouse.Id = id;
-            return _warehouseRepository.Update(warehouse);
+            return _warehouseRepository.Update(warehouse, userId);
         }
 
         public List<Product> GetProducts(int warehouseId)
@@ -91,35 +96,41 @@ namespace Application
             return _warehouseRepository.GetProducts(warehouseId);
         }
 
-        public Product CreateProduct(int warehouseId, PostProductDTOWithQuantity productDTO)
+        public Product CreateProduct(int warehouseId, ProductModel model)
         {
-            
-            var productValidation = _postProductWithQuantityValidator.Validate(productDTO);
+            PostProductDTOWithQuantity dto = model.postProductDTOWithQuantity ?? throw new NullReferenceException();
+            int userId = model.userId;
+            var productValidation = _postProductWithQuantityValidator.Validate(dto);
             if (!productValidation.IsValid)
                 throw new ValidationException(productValidation.ToString());
-            return _warehouseRepository.CreateProduct(warehouseId, _mapper.Map<Product>(productDTO));
+            return _warehouseRepository.CreateProduct(warehouseId, _mapper.Map<Product>(dto), userId);
         }
 
-        public Product UpdateProduct(int warehouseId, PutProductDTOWithQuantity productDTO)
+        public Product UpdateProduct(int warehouseId, ProductModel model)
         {
+            PutProductDTOWithQuantity dto = model.putProductDTOWithQuantity ?? throw new NullReferenceException();
+            int userId = model.userId;
             
-            var productValidation = _putProductWithQuantityValidator.Validate(productDTO);
+            var productValidation = _putProductWithQuantityValidator.Validate(dto);
             if (!productValidation.IsValid)
                 throw new ValidationException(productValidation.ToString());
-            return _warehouseRepository.UpdateProduct(warehouseId, _mapper.Map<Product>(productDTO));
+            return _warehouseRepository.UpdateProduct(warehouseId, _mapper.Map<Product>(dto), userId);
         }
 
-        public Product DeleteProduct(int warehouseId, int productId, bool deleteFromProductTable)
+        public Product DeleteProduct(int warehouseId, DeleteProductFromWarehouseModel model)
         {
-            return _warehouseRepository.DeleteProduct(warehouseId, productId, deleteFromProductTable);
+            int productId = model.productId;
+            int userId = model.userId;
+            bool deleteFromProductTable = model.deleteFromProductTable;
+            return _warehouseRepository.DeleteProduct(warehouseId, productId, deleteFromProductTable,userId);
         }
 
-        public Product AddProduct(PostProductInWarehouseDTO pinDTO)
+        public Product AddProduct(PostProductInWarehouseDTO pinDTO, int userId)
         {
             var validation = _postPINValidator.Validate(pinDTO);
             if(!validation.IsValid)
                 throw new ValidationException(validation.ToString());
-            return _warehouseRepository.AddProduct(_mapper.Map<ProductInWarehouse>(pinDTO));
+            return _warehouseRepository.AddProduct(_mapper.Map<ProductInWarehouse>(pinDTO), userId);
         }
 
         public List<User> GetUsers(int warehouseId)
@@ -127,12 +138,12 @@ namespace Application
             return _warehouseRepository.GetUsers(warehouseId);
         }
 
-        public User AddUser(PostUserInWarehouseDTO uiwDTO)
+        public User AddUser(PostUserInWarehouseDTO uiwDTO, int requestedUserId)
         {
             var validation = _postUIWValidator.Validate(uiwDTO);
             if(!validation.IsValid)
                     throw new ValidationException(validation.ToString());
-            return _warehouseRepository.AddUser(_mapper.Map<UserInWarehouse>(uiwDTO));
+            return _warehouseRepository.AddUser(_mapper.Map<UserInWarehouse>(uiwDTO), requestedUserId);
         }
 
         public User RemoveUser(int warehouseId, int userId)
@@ -140,12 +151,12 @@ namespace Application
             return _warehouseRepository.RemoveUser(warehouseId, userId);
         }
 
-        public User UpdateUserAccessLevel(PutUserInWarehouseDTO uiwDTO)
+        public User UpdateUserAccessLevel(PutUserInWarehouseDTO uiwDTO, int userId)
         {
             var validation = _putUIWValidator.Validate(uiwDTO);
             if(!validation.IsValid)
                 throw new ValidationException(validation.ToString());
-            return _warehouseRepository.UpdateUserAccesLevel(_mapper.Map<UserInWarehouse>(uiwDTO));
+            return _warehouseRepository.UpdateUserAccesLevel(_mapper.Map<UserInWarehouse>(uiwDTO), userId);
         }
     }
 }

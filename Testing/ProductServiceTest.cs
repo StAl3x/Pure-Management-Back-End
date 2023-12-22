@@ -1,5 +1,4 @@
 using Application;
-using Application.DTOs;
 using Application.Validators;
 using AutoMapper;
 using Domain;

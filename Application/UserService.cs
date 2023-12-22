@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+﻿using Domain.DTOs;
 using Application.Interfaces;
 using AutoMapper;
 using Domain;
@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Models;
 
 namespace Application;
 
@@ -31,37 +32,41 @@ public class UserService : IUserService
         _repository = repository ?? throw new ArgumentNullException(nameof(repository));
     }
 
-    public List<User> GetAll()
+    public List<User> GetAll(int userId)
     {
-        return _repository.GetAll();
+        return _repository.GetAll(userId);
     }
 
     public User GetById(int id)
     {
         return _repository.GetById(id);
     }
-    public User Create(PostUserDTO dto)
+    public User Create(UserModel model)
     {
+        PostUserDTO dto = model.postUserDTO ?? throw new NullReferenceException();
+        int userId = model.userId;
         var validation = _postValidator.Validate(dto);
         if (!validation.IsValid)
             throw new ValidationException(validation.ToString());
         User user = _mapper.Map<User>(dto);
-        return _repository.Create(user);
+        return _repository.Create(user,userId);
     }
 
-    public User Update(int id, PutUserDTO dto)
+    public User Update(int id, UserModel model)
     {
+        PutUserDTO dto = model.putUserDTO ?? throw new NullReferenceException();
+        int userId = model.userId;
         var validation = _putValidator.Validate(dto);
         if(!validation.IsValid)
             throw new ValidationException(validation.ToString());
         User user = _mapper.Map<User>(dto);
         user.Id = id;
-        return _repository.Update(user);
+        return _repository.Update(user, userId);
     }
 
-    public User Delete(int id)
+    public User Delete(int id, int userId)
     {
-        return _repository.Delete(id);
+        return _repository.Delete(id, userId);
     }
 
     public bool VerifyUserPassword(string UserName, string password)
