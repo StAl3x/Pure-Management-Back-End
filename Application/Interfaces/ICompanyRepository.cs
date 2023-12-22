@@ -12,11 +12,11 @@ namespace Application.Interfaces
         public List<Company> GetAll();
         public Company Create(Company company);
         public Company GetById(int id);
-        public Company Update(Company company);
-        public Company Delete(int id);
-        public List<Warehouse> GetWarehouses(int companyId);
-        public List<Product> GetProducts(int companyId);
-        public List<User>  GetUsers(int companyId);
+        public Company Update(Company company, int userId);
+        public Company Delete(int id, int userId);
+        public List<Warehouse> GetWarehouses(int companyId, int userId);
+        public List<Product> GetProducts(int companyId, int userId);
+        public List<User>  GetUsers(int companyId, int userId);
 
     }
 }

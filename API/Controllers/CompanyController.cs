@@ -1,8 +1,10 @@
-﻿using Application.DTOs;
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Domain;
+using Domain.DTOs;
+using Domain.Models;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace API.Controllers;
 
@@ -48,11 +50,11 @@ public class CompanyController : ControllerBase
 
     [HttpGet]
     [Route("/CompanyUsers{id}")]
-    public ActionResult<List<User>> GetUsers([FromRoute] int id)
+    public ActionResult<List<User>> GetUsers([FromRoute] int id, [FromBody] int userId)
     {
         try
         {
-            return Ok(_companyService.GetUsers(id));
+            return Ok(_companyService.GetUsers(id, userId));
         }
         catch (Exception ex)
         {
@@ -62,11 +64,11 @@ public class CompanyController : ControllerBase
 
     [HttpGet]
     [Route("/CompanyProducts{id}")]
-    public ActionResult<List<Product>> GetProducts([FromRoute] int id)
+    public ActionResult<List<Product>> GetProducts([FromRoute] int id, [FromBody] int userId)
     {
         try
         {
-            return Ok(_companyService.GetProducts(id));
+            return Ok(_companyService.GetProducts(id, userId));
         }
         catch (Exception ex)
         {
@@ -76,11 +78,11 @@ public class CompanyController : ControllerBase
 
     [HttpGet]
     [Route("/CompanyWarehouses{id}")]
-    public ActionResult<List<Warehouse>> GetWarehouses([FromRoute] int id)
+    public ActionResult<List<Warehouse>> GetWarehouses([FromRoute] int id, [FromBody] int userId)
     {
         try
         {
-            return Ok(_companyService.GetWarehouses(id));
+            return Ok(_companyService.GetWarehouses(id, userId));
         }
         catch (Exception ex)
         {
@@ -114,11 +116,11 @@ public class CompanyController : ControllerBase
 
     [HttpPut]
     [Route("{id}")] //localhost:5001/product/8732648732
-    public ActionResult<Company> Update([FromRoute] int id, [FromBody] PutCompanyDTO company)
+    public ActionResult<Company> Update([FromRoute] int id, [FromBody] CompanyModel model)
     {
         try
         {
-            var result = _companyService.Update(id, company);
+            var result = _companyService.Update(id, model);
             return Ok(result);
         }
         catch (KeyNotFoundException ex)
@@ -138,11 +140,11 @@ public class CompanyController : ControllerBase
 
     [HttpDelete]
     [Route("{id}")]
-    public ActionResult<Company> Delete(int id)
+    public ActionResult<Company> Delete([FromRoute]int id, [FromBody] int userId)
     {
         try
         {
-            return Ok(_companyService.Delete(id));
+            return Ok(_companyService.Delete(id, userId));
         }
         catch (KeyNotFoundException ex)
         {

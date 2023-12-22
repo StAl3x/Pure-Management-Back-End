@@ -1,7 +1,8 @@
-﻿using Application.DTOs;
+﻿using Domain.DTOs;
 using Application.Interfaces;
 using Domain;
 using Domain.Interfaces;
+using Domain.Models;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.CodeAnalysis;
@@ -20,12 +21,12 @@ public class WarehouseController : ControllerBase
     }
 
     [HttpGet]
-    [Route("")]
-    public ActionResult<List<Warehouse>> GetAllWarehouses()
+    [Route("{userId}")]
+    public ActionResult<List<Warehouse>> GetAllWarehouses([FromRoute] int userId)
     {
         try
         {
-            return Ok(_warehouseService.GetAll());
+            return Ok(_warehouseService.GetAll(userId));
         }
         catch (Exception ex)
         {
@@ -53,11 +54,11 @@ public class WarehouseController : ControllerBase
 
     [HttpPost]
     [Route("")]
-    public ActionResult<Warehouse> CreateNewWarehouse(PostWarehouseDTO dto)
+    public ActionResult<Warehouse> CreateNewWarehouse(WarehouseModel model)
     {
         try
         {
-            var warehouse = _warehouseService.Create(dto);
+            var warehouse = _warehouseService.Create(model);
             return Ok(Created($"product/{warehouse.Id}", warehouse));
         }
         catch (ValidationException ex)
@@ -77,11 +78,11 @@ public class WarehouseController : ControllerBase
 
     [HttpPut]
     [Route("{id}")] //localhost:5001/product/8732648732
-    public ActionResult<Warehouse> UpdateWarehouse([FromRoute] int id, [FromBody] PutWarehouseDTO dto)
+    public ActionResult<Warehouse> UpdateWarehouse([FromRoute] int id, [FromBody] WarehouseModel model)
     {
         try
         {
-            var result = _warehouseService.Update(id, dto);
+            var result = _warehouseService.Update(id, model);
             return Ok(result);
         }
         catch (KeyNotFoundException ex)
@@ -101,11 +102,11 @@ public class WarehouseController : ControllerBase
 
     [HttpDelete]
     [Route("{id}")]
-    public ActionResult<Warehouse> DeleteWarehouse(int id)
+    public ActionResult<Warehouse> DeleteWarehouse([FromRoute]int id, [FromBody] int userId)
     {
         try
         {
-            return Ok(_warehouseService.Delete(id));
+            return Ok(_warehouseService.Delete(id, userId));
         }
         catch (KeyNotFoundException ex)
         {
@@ -133,11 +134,11 @@ public class WarehouseController : ControllerBase
 
     [HttpPost]
     [Route("product/{warehouseId}")]
-    public ActionResult<Product> CreateProduct([FromRoute] int warehouseId, [FromBody] PostProductDTOWithQuantity productDTO) 
+    public ActionResult<Product> CreateProduct([FromRoute] int warehouseId, [FromBody] ProductModel model) 
     {
         try
         {
-            var result = _warehouseService.CreateProduct(warehouseId, productDTO);
+            var result = _warehouseService.CreateProduct(warehouseId, model);
             return Ok(result);
         }
         catch (ValidationException ex)
@@ -156,11 +157,11 @@ public class WarehouseController : ControllerBase
 
     [HttpPut]
     [Route("productQuantity/{warehouseId}")]
-    public ActionResult<Product> UpdateProductQuantity([FromRoute] int warehouseId, PutProductDTOWithQuantity productWithQuantityDTO) 
+    public ActionResult<Product> UpdateProductQuantity([FromRoute] int warehouseId, ProductModel model) 
     {
         try
         {
-            return Ok(_warehouseService.UpdateProduct(warehouseId, productWithQuantityDTO));
+            return Ok(_warehouseService.UpdateProduct(warehouseId, model));
         }
         catch (ValidationException ex)
         {
@@ -180,11 +181,10 @@ public class WarehouseController : ControllerBase
     [Route("product/{warehouseId}")]
     public ActionResult<Product> DeleteProduct([FromRoute] int warehouseId, [FromBody] DeleteProductFromWarehouseModel model)
     {
-        int productId = model.productId;
-        bool deleteFromProductTable = model.deleteFromProductTable;
+       
         try
         {
-            return Ok(_warehouseService.DeleteProduct(warehouseId, productId, deleteFromProductTable));
+            return Ok(_warehouseService.DeleteProduct(warehouseId, model));
         }
         catch (KeyNotFoundException ex)
         {
@@ -197,12 +197,12 @@ public class WarehouseController : ControllerBase
     }
 
     [HttpPost]
-    [Route("productAdd/")]
-    public ActionResult<Product> AddProduct([FromBody] PostProductInWarehouseDTO pinDTO)
+    [Route("productAdd/{userId}")]
+    public ActionResult<Product> AddProduct([FromRoute] int userId, [FromBody] PostProductInWarehouseDTO pinDTO)
     {
         try
         {
-            var result = _warehouseService.AddProduct(pinDTO);
+            var result = _warehouseService.AddProduct(pinDTO, userId);
             return Ok(result);
         }
         catch (ValidationException ex)
@@ -234,12 +234,12 @@ public class WarehouseController : ControllerBase
     }
 
     [HttpPost]
-    [Route("userAdd/")]
-    public ActionResult<User> AddUser([FromBody] PostUserInWarehouseDTO uiwDTO)
+    [Route("userAdd/{requestedUserId}")]
+    public ActionResult<User> AddUser([FromRoute] int requestedUserId,[FromBody] PostUserInWarehouseDTO uiwDTO)
     {
         try
         {
-            var result = _warehouseService.AddUser(uiwDTO);
+            var result = _warehouseService.AddUser(uiwDTO, requestedUserId);
             return Ok(result);
         }
         catch (ValidationException ex)
@@ -275,12 +275,12 @@ public class WarehouseController : ControllerBase
     }
 
     [HttpPut]
-    [Route("user/")]
-    public ActionResult<Product> UpdateUserAccessLevel([FromBody] PutUserInWarehouseDTO uiwDTO)
+    [Route("user/{userId}")]
+    public ActionResult<Product> UpdateUserAccessLevel([FromRoute] int userId,[FromBody] PutUserInWarehouseDTO uiwDTO)
     {
         try
         {
-            var resutl = _warehouseService.UpdateUserAccessLevel(uiwDTO);
+            var resutl = _warehouseService.UpdateUserAccessLevel(uiwDTO, userId);
             return Ok(resutl);
         }
         catch (ValidationException ex)

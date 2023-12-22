@@ -1,13 +1,10 @@
-﻿using Application.DTOs;
+﻿
 using Application.Interfaces;
 using AutoMapper;
 using Domain;
 using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Domain.DTOs;
+using Domain.Models;
 
 namespace Application;
 
@@ -39,9 +36,9 @@ public class CompanyService : ICompanyService
         return _repository.Create(company);
     }
 
-    public Company Delete(int id)
+    public Company Delete(int id, int userId)
     {
-        return _repository.Delete(id);
+        return _repository.Delete(id, userId);
     }
 
     public List<Company> GetAll()
@@ -54,29 +51,31 @@ public class CompanyService : ICompanyService
         return _repository.GetById(id);
     }
 
-    public List<Product> GetProducts(int companyId)
+    public List<Product> GetProducts(int companyId, int userId)
     {
-        return _repository.GetProducts(companyId);
+        return _repository.GetProducts(companyId, userId);
     }
 
-    public List<User> GetUsers(int companyId)
+    public List<User> GetUsers(int companyId, int userId)
     {
-        return _repository.GetUsers(companyId);
+        return _repository.GetUsers(companyId, userId);
     }
 
-    public List<Warehouse> GetWarehouses(int companyId)
+    public List<Warehouse> GetWarehouses(int companyId, int userId)
     {
-        return _repository.GetWarehouses(companyId);
+        return _repository.GetWarehouses(companyId, userId);
     }
 
-    public Company Update(int id, PutCompanyDTO dto)
+    public Company Update(int id, CompanyModel model)
     {
+        PutCompanyDTO dto = model.company;
+        int userId = model.userId;
         var validation = _putValidator.Validate(dto);
         if(!validation.IsValid)
             throw new ValidationException(validation.ToString());
         Company company = _mapper.Map<Company>(dto);
         company.Id = id;
-        return _repository.Update(company);
+        return _repository.Update(company, userId);
 
     }
 }

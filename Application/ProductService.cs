@@ -1,8 +1,9 @@
-﻿using Application.DTOs;
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using AutoMapper;
 using Domain;
+using Domain.DTOs;
 using Domain.Interfaces;
+using Domain.Models;
 using FluentValidation;
 using ValidationException = FluentValidation.ValidationException;
 
@@ -33,14 +34,16 @@ public class ProductService : IProductService
         return _productRepository.GetAllProducts();
     }
 
-    public Product CreateNewProduct(PostProductDTO dto)
+    public Product CreateNewProduct(ProductModel model)
     {
+        PostProductDTO dto = model.postProductDTO ?? throw new NullReferenceException();
+        int userId = model.userId;
         var validation = _postProductValidator.Validate(dto);
         if (!validation.IsValid)
             throw new ValidationException(validation.ToString());
         Product product = _mapper.Map<Product>(dto);
         product.PricePerUnit = Math.Round(product.PricePerUnit, 2);
-        return _productRepository.CreateNewProduct(product);
+        return _productRepository.CreateNewProduct(product, userId);
     }
 
     public Product GetProductById(int id)
@@ -50,20 +53,21 @@ public class ProductService : IProductService
         return product;
     }
 
-    public Product UpdateProduct(int id, PutProductDTO dto)
+    public Product UpdateProduct(int id, ProductModel model)
     {
-       
+        PutProductDTO dto = model.putProductDTO ?? throw new NullReferenceException();
+        int userId = model.userId;
         var validation = _putProductValidator.Validate(dto);
         if (!validation.IsValid)
             throw new ValidationException(validation.ToString());
         Product product = _mapper.Map<Product>(dto);
         product.Id = id;
         product.PricePerUnit = Math.Round(product.PricePerUnit, 2);
-        return _productRepository.UpdateProduct(product);
+        return _productRepository.UpdateProduct(product, userId);
     }
 
-    public Product DeleteProduct(int id)
+    public Product DeleteProduct(int id, int userId)
     {
-        return _productRepository.DeleteProduct(id);
+        return _productRepository.DeleteProduct(id, userId);
     }
 }
