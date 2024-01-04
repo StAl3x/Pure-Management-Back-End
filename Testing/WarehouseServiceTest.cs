@@ -8,6 +8,7 @@ using Moq;
 using Infrastructure;
 using Application.Interfaces;
 using FluentValidation;
+using Domain.Models;
 
 
 namespace Test;
@@ -38,7 +39,9 @@ public class WarehouseServiceTest
         var putWarehouseValidator = new PutWarehouseValidator();
         var postUIWValidator = new PostUserInWarehouseValidator();
         var putUIWValidator = new PutUserInWarehouseValidator();
-        IWarehouseService warehouseService = new WarehouseService(moqRepository.Object, postWarehouseValidator, putWarehouseValidator, postProductValidator, putProductValidator, postPinValidator, putPinValidator, postUIWValidator, putUIWValidator, mapper);
+        var postProductWithQuantityValidator = new PostProductValidatorWithQuantity();
+        var putProductWithQuantityValidator = new PutProductValidatorWithQuantity();
+        IWarehouseService warehouseService = new WarehouseService(moqRepository.Object, postWarehouseValidator, putWarehouseValidator, postProductValidator, putProductValidator, postPinValidator, putPinValidator, postUIWValidator, putUIWValidator,postProductWithQuantityValidator, putProductWithQuantityValidator ,mapper);
 
         Warehouse response = warehouseService.GetById(moqId);
         
@@ -52,12 +55,13 @@ public class WarehouseServiceTest
     public void GetAllWarehouses() 
     {
         var moqRepository = new Mock<IWarehouseRepository>();
+        int moqUserId = 7;
         List<Warehouse> moqWarehouses = new()
         {
             new Warehouse { Id = 24 },
             new Warehouse { Id = 46 },
         };
-        moqRepository.Setup(r => r.GetAll()).Returns(moqWarehouses);
+        moqRepository.Setup(r => r.GetAll(moqUserId)).Returns(moqWarehouses);
 
 
         var mapper = new MapperConfiguration(c => { c.CreateMap<PostProductDTO, Product>(); }).CreateMapper();
@@ -69,9 +73,11 @@ public class WarehouseServiceTest
         var putWarehouseValidator = new PutWarehouseValidator();
         var postUIWValidator = new PostUserInWarehouseValidator();
         var putUIWValidator = new PutUserInWarehouseValidator();
-        IWarehouseService warehouseService = new WarehouseService(moqRepository.Object, postWarehouseValidator, putWarehouseValidator, postProductValidator, putProductValidator, postPinValidator, putPinValidator, postUIWValidator, putUIWValidator, mapper);
+        var postProductWithQuantityValidator = new PostProductValidatorWithQuantity();
+        var putProductWithQuantityValidator = new PutProductValidatorWithQuantity();
+        IWarehouseService warehouseService = new WarehouseService(moqRepository.Object, postWarehouseValidator, putWarehouseValidator, postProductValidator, putProductValidator, postPinValidator, putPinValidator, postUIWValidator, putUIWValidator, postProductWithQuantityValidator, putProductWithQuantityValidator ,mapper);
 
-        List<Warehouse> response = warehouseService.GetAll();
+        List<Warehouse> response = warehouseService.GetAll(moqUserId);
 
 
         Assert.IsNotNull(response);
@@ -80,7 +86,7 @@ public class WarehouseServiceTest
         Assert.AreEqual(response.Count, moqWarehouses.Count);
         Assert.AreEqual(response[0], moqWarehouses[0]);
         Assert.AreEqual(response[1], moqWarehouses[1]);
-        moqRepository.Verify(r => r.GetAll(), Times.Once);
+        moqRepository.Verify(r => r.GetAll(moqUserId), Times.Once);
     }
 
     [TestMethod]
@@ -88,6 +94,7 @@ public class WarehouseServiceTest
     {
         var moqRepository = new Mock<IWarehouseRepository>();
         int moqId = 1;
+        int moqUserId = 7;
         Warehouse warehouseOne = new Warehouse { Id = 1, Name = "warehouseOne", Address= "Esbjerg 6705", CompanyId = 1, EmailAddress = "6705@gmail.com" };
         Warehouse warehouseTwo = new Warehouse { Id = 2, Name = "warehouseTwo", Address = "Esbjerg 6700", CompanyId = 2, EmailAddress = "6700@gmail.com" };
         List<Warehouse> warehouseList = new List<Warehouse>();
@@ -95,7 +102,7 @@ public class WarehouseServiceTest
         warehouseList.Add(warehouseTwo);
 
         moqRepository.Setup(r => r.GetById(moqId)).Returns(warehouseOne);
-        moqRepository.Setup(r => r.Delete(moqId)).Returns(() => { warehouseList.Remove(warehouseOne); 
+        moqRepository.Setup(r => r.Delete(moqId, moqUserId)).Returns(() => { warehouseList.Remove(warehouseOne); 
                                                                          return warehouseOne; });
 
 
@@ -108,9 +115,11 @@ public class WarehouseServiceTest
         var putWarehouseValidator = new PutWarehouseValidator();
         var postUIWValidator = new PostUserInWarehouseValidator();
         var putUIWValidator = new PutUserInWarehouseValidator();
-        IWarehouseService warehouseService = new WarehouseService(moqRepository.Object, postWarehouseValidator, putWarehouseValidator, postProductValidator, putProductValidator, postPinValidator, putPinValidator, postUIWValidator, putUIWValidator, mapper);
+        var postProductWithQuantityValidator = new PostProductValidatorWithQuantity();
+        var putProductWithQuantityValidator = new PutProductValidatorWithQuantity();
+        IWarehouseService warehouseService = new WarehouseService(moqRepository.Object, postWarehouseValidator, putWarehouseValidator, postProductValidator, putProductValidator, postPinValidator, putPinValidator, postUIWValidator, putUIWValidator, postProductWithQuantityValidator, putProductWithQuantityValidator ,mapper);
 
-        Warehouse response = warehouseService.Delete(moqId);
+        Warehouse response = warehouseService.Delete(moqId, moqUserId);
 
 
         Assert.IsNotNull(response);
@@ -119,7 +128,7 @@ public class WarehouseServiceTest
         Assert.AreEqual(warehouseOne.Id, response.Id);
         Assert.IsFalse(warehouseList.Contains(warehouseOne));
         Assert.IsTrue(warehouseList.Contains(warehouseTwo));
-        moqRepository.Verify(r => r.Delete(moqId), Times.Once);
+        moqRepository.Verify(r => r.Delete(moqId, moqUserId), Times.Once);
     }
 
     [TestMethod]
@@ -127,10 +136,11 @@ public class WarehouseServiceTest
     {
         var moqRepository = new Mock<IWarehouseRepository>();
         int moqId = 1;
+        var moqUserId = 7;
         PutWarehouseDTO putDto = new PutWarehouseDTO() { Address = "Esbjerg 6700", CompanyId = 2, EmailAddress = "6700@gmail.com", Name = "updatedWarehouse", };
-        Warehouse updatedWarehouse = new Warehouse() { Id = moqId, Address = putDto.Address, CompanyId = putDto.CompanyId, EmailAddress = putDto.EmailAddress, Name = putDto.Name};
-
-        moqRepository.Setup(r => r.Update(It.IsAny<Warehouse>())).Returns(updatedWarehouse);
+        Warehouse updatedWarehouse = new Warehouse() { Id = moqId, Address = putDto.Address, CompanyId = putDto.CompanyId, EmailAddress = putDto.EmailAddress, Name = putDto.Name };
+        WarehouseModel model = new WarehouseModel {userId = moqUserId, putWarehouseDTO = putDto };
+        moqRepository.Setup(r => r.Update(It.IsAny<Warehouse>(), moqUserId)).Returns(updatedWarehouse);
        
 
 
@@ -146,9 +156,11 @@ public class WarehouseServiceTest
         var putWarehouseValidator = new PutWarehouseValidator();
         var postUIWValidator = new PostUserInWarehouseValidator();
         var putUIWValidator = new PutUserInWarehouseValidator();
-        IWarehouseService warehouseService = new WarehouseService(moqRepository.Object, postWarehouseValidator, putWarehouseValidator, postProductValidator, putProductValidator, postPinValidator, putPinValidator, postUIWValidator, putUIWValidator, mapper);
+        var postProductWithQuantityValidator = new PostProductValidatorWithQuantity();
+        var putProductWithQuantityValidator = new PutProductValidatorWithQuantity();
+        IWarehouseService warehouseService = new WarehouseService(moqRepository.Object, postWarehouseValidator, putWarehouseValidator, postProductValidator, putProductValidator, postPinValidator, putPinValidator, postUIWValidator, putUIWValidator, postProductWithQuantityValidator, putProductWithQuantityValidator ,mapper);
 
-        Warehouse response = warehouseService.Update(moqId, putDto);
+        Warehouse response = warehouseService.Update(moqId, model);
 
 
         Assert.IsNotNull(response);
@@ -158,20 +170,16 @@ public class WarehouseServiceTest
         Assert.AreEqual(updatedWarehouse.CompanyId, response.CompanyId);
         Assert.AreEqual(updatedWarehouse.EmailAddress, response.EmailAddress);
         Assert.AreEqual(updatedWarehouse.Id, moqId);
-        moqRepository.Verify(r => r.Update(It.IsAny<Warehouse>()), Times.Once);
+        moqRepository.Verify(r => r.Update(It.IsAny<Warehouse>(), moqUserId), Times.Once);
     }
 
     [TestMethod]
     public void GetProducts()
     {
-        var moqWarehouseRepository = new Mock<IWarehouseRepository>();
+        var moqRepository = new Mock<IWarehouseRepository>();
         Warehouse warehouse = new Warehouse() { Id = 1};
-        List<ProductInWarehouse> moqPins = new List<ProductInWarehouse>()
-        {
-            new ProductInWarehouse { Id = 1, ProductId = 1, Quantity= 12, WarehouseId= 1 },
-            new ProductInWarehouse { Id = 2, ProductId = 2, Quantity= 23, WarehouseId= 1 },
-            new ProductInWarehouse { Id = 3, ProductId = 3, Quantity= 4, WarehouseId= 2 }
-        };
+        int moqUserId = 7;
+        int moqWarehouseId = 1;
 
         List<Product> moqProducts = new List<Product>()
         { 
@@ -180,14 +188,14 @@ public class WarehouseServiceTest
             new Product {Id=3, Name= "product3", CompanyId = 1, Unit= "pieces", PricePerUnit = 4, Quantity=4}
         };
 
-        moqWarehouseRepository.Setup(r => r.CreateProduct(moqPins[0], moqProducts[0]));
-        moqWarehouseRepository.Setup(r => r.CreateProduct(moqPins[1], moqProducts[1]));
-        moqWarehouseRepository.Setup(r => r.CreateProduct(moqPins[2], moqProducts[2]));
+        moqRepository.Setup(r => r.CreateProduct(moqWarehouseId, moqProducts[0], moqUserId));
+        moqRepository.Setup(r => r.CreateProduct(moqWarehouseId, moqProducts[1], moqUserId));
+        moqRepository.Setup(r => r.CreateProduct(moqWarehouseId, moqProducts[2], moqUserId));
 
         List<Product> expected = new List<Product>();
         expected.Add(moqProducts[0]);
         expected.Add(moqProducts[1]);
-        moqWarehouseRepository.Setup(r => r.GetProducts(warehouse.Id)).Returns(expected);
+        moqRepository.Setup(r => r.GetProducts(warehouse.Id)).Returns(expected);
 
         var mapper = new MapperConfiguration(c => { c.CreateMap<PostProductInWarehouseDTO, ProductInWarehouse>(); 
                                                     c.CreateMap<PostProductDTO, Product>(); })  
@@ -200,7 +208,9 @@ public class WarehouseServiceTest
         var putWarehouseValidator = new PutWarehouseValidator();
         var postUIWValidator = new PostUserInWarehouseValidator();
         var putUIWValidator = new PutUserInWarehouseValidator();
-        IWarehouseService warehouseService = new WarehouseService(moqWarehouseRepository.Object,postWarehouseValidator, putWarehouseValidator, postProductValidator, putProductValidator, postPinValidator, putPinValidator, postUIWValidator, putUIWValidator, mapper);
+        var postProductWithQuantityValidator = new PostProductValidatorWithQuantity();
+        var putProductWithQuantityValidator = new PutProductValidatorWithQuantity();
+        IWarehouseService warehouseService = new WarehouseService(moqRepository.Object, postWarehouseValidator, putWarehouseValidator, postProductValidator, putProductValidator, postPinValidator, putPinValidator, postUIWValidator, putUIWValidator, postProductWithQuantityValidator, putProductWithQuantityValidator ,mapper);
 
         List<Product> response = warehouseService.GetProducts(warehouse.Id);
 
@@ -208,7 +218,7 @@ public class WarehouseServiceTest
         Assert.IsTrue(response is List<Product>);
         Assert.AreEqual(response, expected);
         Assert.IsNotNull(response[0].Quantity);
-        moqWarehouseRepository.Verify(r => r.GetProducts(warehouse.Id), Times.Once);
+        moqRepository.Verify(r => r.GetProducts(warehouse.Id), Times.Once);
 
     }
 
