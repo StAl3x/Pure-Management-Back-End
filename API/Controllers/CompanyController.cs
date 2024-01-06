@@ -48,7 +48,7 @@ public class CompanyController : ControllerBase
         }
     }
 
-    [HttpGet]
+    [HttpPost]
     [Route("/CompanyUsers{id}")]
     public ActionResult<List<User>> GetUsers([FromRoute] int id, [FromBody] int userId)
     {
@@ -62,7 +62,7 @@ public class CompanyController : ControllerBase
         }
     }
 
-    [HttpGet]
+    [HttpPost]
     [Route("/CompanyProducts{id}")]
     public ActionResult<List<Product>> GetProducts([FromRoute] int id, [FromBody] int userId)
     {
@@ -76,7 +76,7 @@ public class CompanyController : ControllerBase
         }
     }
 
-    [HttpGet]
+    [HttpPost]
     [Route("/CompanyWarehouses{id}")]
     public ActionResult<List<Warehouse>> GetWarehouses([FromRoute] int id, [FromBody] int userId)
     {
